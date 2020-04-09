@@ -1,0 +1,40 @@
+{
+  "name": "halberd-roguelike",
+  "version": "1.0.0",
+  "description": "A Halberd fantasy roguelike",
+  "main": "/src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config=webpack.prod.js",
+    "start": "webpack-dev-server --config=webpack.dev.js --open"
+  },
+  "keywords": [
+    "rot",
+    "javascript",
+    "roguelike"
+  ],
+  "author": "Matthew Masiello",
+  "license": "ISC",
+  "jest": {
+    "testEnvironment": "jsdom",
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
+    }
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.9.5",
+    "exports-loader": "^0.7.0",
+    "file-loader": "^6.0.0",
+    "html-webpack-plugin": "^4.0.4",
+    "style-loader": "^1.1.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "dependencies": {
+    "@babel/core": "^7.9.0",
+    "babel-jest": "^25.2.6",
+    "rot-js": "^2.1.1"
+  }
+}
