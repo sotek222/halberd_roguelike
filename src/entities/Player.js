@@ -1,10 +1,11 @@
 import { DIRS } from 'rot-js';
 
 class Player {
-  constructor(x, y, game){
+  constructor(x, y, game, char = "☺︎"){
     this._x = x; 
     this._y = y;
     this.game = game;
+    this.char = char
     this.keyMap = {
       '38': 0,
       '33': 1,
@@ -28,7 +29,7 @@ class Player {
   }
 
   _draw(){
-    this.game.display.draw(this.x, this.y, "@", "#ff0");
+    this.game.display.draw(this.x, this.y, this.char, "#ff0");
   }
   
   act() {
@@ -38,8 +39,8 @@ class Player {
   }
 
   handleEvent(e) {
-    e.preventDefault();
     if (!(e.keyCode in this.keyMap)) return;
+    e.preventDefault();
 
 
     const dir = DIRS[8][this.keyMap[e.keyCode]];
