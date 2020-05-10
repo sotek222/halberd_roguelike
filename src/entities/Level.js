@@ -28,7 +28,7 @@ class Level {
       // value can be either 1 or 0
       if (value){
         const key = [x, y].join();
-        this.wall[key] = " ";
+        this.wall[key] = "";
         return;
       }
 
@@ -49,17 +49,17 @@ class Level {
     this._generateWholeMap();
     // add the player to the level and the game as a whole
     this.game.addPlayer(this._createEntity(Player, freeCells));
-    for (let i = 0; i < 5; i++) {
-      const mob = this._createEntity(Mob, freeCells);
-      this.enemies.push(mob);
-    };
+    // for (let i = 0; i < 5; i++) {
+    //   const mob = this._createEntity(Mob, freeCells);
+    //   this.enemies.push(mob);
+    // };
     // add the exit to the end of the map
     this._createExit(freeCells);
   }
 
   _generateWholeMap() {
     for (const key in this.map) {
-      const [x, y] = numParse(key.split(","))
+      const [x, y] = numParse(key.split(","));
       this.game.display.draw(x, y, this.map[key]);
     }
     for(const key in this.wall) {
@@ -82,12 +82,12 @@ class Level {
   }
 
   _createExit(freeCells){
-    const lastSpace = freeCells.length - 1
+    const lastSpace = freeCells.length - 1;
     const exitSpace = freeCells.splice(lastSpace, 1);
     const [x, y] = numParse(exitSpace[0].split(','));
     this.map[x + "," + y] = "∏";
     this.exit = exitSpace;
-    this.game.display.draw(x, y, "∏", "#f5f")
+    this.game.display.draw(x, y, "∏");
   }
 
   redraw(){
