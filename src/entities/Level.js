@@ -1,5 +1,6 @@
 import { Map, RNG } from 'rot-js';
 import Player from './Player';
+import Mob from './Mob';
 import numParse from '../utils/helpers';
 
 class Level {
@@ -45,6 +46,9 @@ class Level {
     this._generateWholeMap();
     // add the player to the level and the game as a whole
     this.game.addPlayer(this._createEntity(Player, freeCells));
+    for (let i = 0; i < 5; i++) {
+      this._createEntity(Mob, freeCells);
+    }
     // add the exit to the end of the map
     this._createExit(freeCells);
   }

@@ -1,9 +1,10 @@
 class Mob {
-  constructor(x, y, game, char = "☠︎"){
+  constructor(x, y, game, char = "⚉"){
     this._x = x;
     this._y = y;
     this.game = game;
     this.char = char;
+    this._draw();
   }
 
   get x() {
@@ -15,7 +16,7 @@ class Mob {
   }
 
   _draw() {
-    this.game.display.draw(this.x, this.y, this.char, "#ff0");
+    this.game.display.draw(this.x, this.y, this.char, "#f00");
   }
 };
 
