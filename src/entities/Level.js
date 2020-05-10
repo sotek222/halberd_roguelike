@@ -12,6 +12,9 @@ class Level {
     this.enemies = [];
     // used to keep track of where the exit is located
     this.exit = null;
+  }
+  
+  init(){
     this._generateMap();
   }
 
@@ -85,6 +88,10 @@ class Level {
     this.map[x + "," + y] = "∏";
     this.exit = exitSpace;
     this.game.display.draw(x, y, "∏", "#f5f")
+  }
+
+  redraw(){
+    this._generateWholeMap();
   }
 
 };

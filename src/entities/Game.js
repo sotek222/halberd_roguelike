@@ -19,6 +19,7 @@ class Game {
   init(){
     // sets the first level
     this.currentLevel = new Level(this);
+    this.currentLevel.init();
     const scheduler = new Scheduler.Simple();
     // adds the player to the scheduler
     // the second argument indicates that

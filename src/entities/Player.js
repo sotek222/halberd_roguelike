@@ -29,6 +29,7 @@ class Player {
   }
 
   _draw(){
+    this.updateVisibility();
     this.game.display.draw(this.x, this.y, this.char, "#0f0");
   }
   
@@ -42,18 +43,29 @@ class Player {
     if (!(e.keyCode in this.keyMap)) return;
     e.preventDefault();
 
-
     const dir = DIRS[8][this.keyMap[e.keyCode]];
     const newX = this._x + dir[0];
     const newY = this._y + dir[1];
     const newLocation = newX + "," + newY;
     if (!(newLocation in this.game.currentLevel.map)) return;
 
-    // input callback 
+    this.game.display.draw(this._x, this._y, this.game.currentLevel.map[`${this._x},${this._y}`]);
+    this._x = newX;
+    this._y = newY;
+    this._draw();
+
+    window.removeEventListener("keydown", this.ref)
+    this.game.engine.unlock();
+  }
+
+  updateVisibility(){
+    this.game.currentLevel.redraw();
+    // returns true if light is able to pass through 
     function lightPasses(x, y) {
       const key = x + "," + y;
       return key in this.game.currentLevel.map
     };
+
     const fov = new FOV.PreciseShadowcasting(lightPasses.bind(this));
     // output callback 
     fov.compute(this.x, this.y, 5, function (x, y, r, visibility) {
@@ -73,16 +85,8 @@ class Player {
       const color = (mapChar ? "#660" : "");
       this.game.display.draw(x, y, char, "#fff", color);
     }.bind(this));
-
-    this.game.display.draw(this._x, this._y, this.game.currentLevel.map[`${this._x},${this._y}`]);
-    this._x = newX;
-    this._y = newY;
-    this._draw();
-
-
-    window.removeEventListener("keydown", this.ref)
-    this.game.engine.unlock();
   }
+
 };
 
 export default Player;
