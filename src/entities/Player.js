@@ -47,6 +47,7 @@ class Player {
     const newX = this._x + dir[0];
     const newY = this._y + dir[1];
     const newLocation = newX + "," + newY;
+    // TODO: prevent character from moving into mobs 
     if (!(newLocation in this.game.currentLevel.map)) return;
 
     this.game.display.draw(this._x, this._y, this.game.currentLevel.map[`${this._x},${this._y}`]);

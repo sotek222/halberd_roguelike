@@ -47,7 +47,8 @@ class Level {
     // add the player to the level and the game as a whole
     this.game.addPlayer(this._createEntity(Player, freeCells));
     for (let i = 0; i < 5; i++) {
-      this._createEntity(Mob, freeCells);
+      const mob = this._createEntity(Mob, freeCells);
+      this.enemies.push(mob);
     }
     // add the exit to the end of the map
     this._createExit(freeCells);

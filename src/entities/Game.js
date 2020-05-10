@@ -21,7 +21,12 @@ class Game {
     this.currentLevel = new Level(this);
     const scheduler = new Scheduler.Simple();
     // adds the player to the scheduler
+    // the second argument indicates that
+    // the entity is a recurring event
     scheduler.add(this.player, true);
+    for (const enemy of this.currentLevel.enemies) {
+      scheduler.add(enemy, true);
+    };
     // creates the game engine
     this.engine = new Engine(scheduler);
     this.engine.start();
