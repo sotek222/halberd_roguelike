@@ -1,4 +1,4 @@
-import { DIRS } from 'rot-js';
+import { DIRS, FOV } from 'rot-js';
 
 class Player {
   constructor(x, y, game, char = "☺︎"){
@@ -29,7 +29,7 @@ class Player {
   }
 
   _draw(){
-    this.game.display.draw(this.x, this.y, this.char, "#ff0");
+    this.game.display.draw(this.x, this.y, this.char, "#0f0");
   }
   
   act() {
@@ -47,8 +47,32 @@ class Player {
     const newX = this._x + dir[0];
     const newY = this._y + dir[1];
     const newLocation = newX + "," + newY;
-    // TODO: prevent character from moving into mobs 
     if (!(newLocation in this.game.currentLevel.map)) return;
+
+    // input callback 
+    function lightPasses(x, y) {
+      const key = x + "," + y;
+      return key in this.game.currentLevel.map
+    };
+    const fov = new FOV.PreciseShadowcasting(lightPasses.bind(this));
+    // output callback 
+    fov.compute(this.x, this.y, 5, function (x, y, r, visibility) {
+      const mapChar = this.game.currentLevel.map[x + "," + y];
+
+      let char;
+      if (r) {
+        if (mapChar) {
+          char = mapChar
+        } else {
+          char = "";
+        };
+      } else {
+        char = this.char;
+      };
+
+      const color = (mapChar ? "#660" : "");
+      this.game.display.draw(x, y, char, "#fff", color);
+    }.bind(this));
 
     this.game.display.draw(this._x, this._y, this.game.currentLevel.map[`${this._x},${this._y}`]);
     this._x = newX;

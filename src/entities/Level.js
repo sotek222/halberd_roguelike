@@ -49,7 +49,7 @@ class Level {
     for (let i = 0; i < 5; i++) {
       const mob = this._createEntity(Mob, freeCells);
       this.enemies.push(mob);
-    }
+    };
     // add the exit to the end of the map
     this._createExit(freeCells);
   }
@@ -82,6 +82,7 @@ class Level {
     const lastSpace = freeCells.length - 1
     const exitSpace = freeCells.splice(lastSpace, 1);
     const [x, y] = numParse(exitSpace[0].split(','));
+    this.map[x + "," + y] = "∏";
     this.exit = exitSpace;
     this.game.display.draw(x, y, "∏", "#f5f")
   }
