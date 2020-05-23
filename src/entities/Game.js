@@ -25,8 +25,8 @@ class Game {
     // the second argument indicates that
     // the entity is a recurring event
     scheduler.add(this.player, true);
-    for (const enemy of this.currentLevel.enemies) {
-      scheduler.add(enemy, true);
+    for (const mob of this.currentLevel.mobs) {
+      scheduler.add(mob, true);
     };
     // creates the game engine
     this.engine = new Engine(scheduler);

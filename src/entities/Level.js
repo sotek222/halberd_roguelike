@@ -1,7 +1,8 @@
 import { Map, RNG } from 'rot-js';
 import Player from './Player';
 import Mob from './Mob';
-import numParse from '../utils/helpers';
+import { numParse } from '../utils/helpers';
+import { mobs, mobWeightMap } from '../utils/mobs';
 
 class Level {
   constructor(game, tileSet){
@@ -9,7 +10,7 @@ class Level {
     this.wall = {};
     this.game = game;
     this.player = null;
-    this.enemies = [];
+    this.mobs = [];
     // used to keep track of where the exit is located
     this.exit = null;
   }
@@ -49,10 +50,13 @@ class Level {
     this._generateWholeMap();
     // add the player to the level and the game as a whole
     this.game.addPlayer(this._createEntity(Player, freeCells));
-    // for (let i = 0; i < 5; i++) {
-    //   const mob = this._createEntity(Mob, freeCells);
-    //   this.enemies.push(mob);
-    // };
+
+
+    for(let i = 0; i < 10; i++){
+      const mob = mobs[RNG.getWeightedValue(mobWeightMap)];
+      this.mobs.push(this._createEntity(Mob, freeCells, mob.char, mob.alignment));
+    }
+
     // add the exit to the end of the map
     this._createExit(freeCells);
   }
@@ -68,7 +72,7 @@ class Level {
     }
   }
 
-  _createEntity(Entity, freeCells){
+  _createEntity(Entity, freeCells, char, alignment){
     if (Entity.prototype === Player.prototype){
       const [x, y] = numParse(freeCells.splice(0, 1)[0].split(','))
       this.player = new Entity(x, y, this.game);
@@ -77,7 +81,7 @@ class Level {
       const index = Math.floor(RNG.getUniform() * freeCells.length);
       // we use splice so that the space is now considered occupied
       const [x, y] = numParse(freeCells.splice(index, 1)[0].split(','))
-      return new Entity(x, y, this.game);
+      return new Entity(x, y, this.game, char, alignment);
     };
   }
 
