@@ -55,7 +55,7 @@ class Level {
 
     for(let i = 0; i < 5; i++){
       const mob = mobs[RNG.getWeightedValue(mobWeightMap)];
-      this.mobs.push(this._createEntity(Mob, freeCells, mob.char, mob.alignment));
+      this.mobs.push(this._createEntity(Mob, freeCells, mob.stats));
     }
 
     // add the exit to the end of the map
@@ -73,7 +73,7 @@ class Level {
     }
   }
 
-  _createEntity(Entity, freeCells, char, alignment){
+  _createEntity(Entity, freeCells, stats){
     if (Entity.prototype === Player.prototype){
       const [x, y] = numParse(freeCells.splice(0, 1)[0].split(','));
       this.player = new Entity(x, y, this.game);
@@ -83,7 +83,7 @@ class Level {
       const index = Math.floor(RNG.getUniform() * freeCells.length);
       // we use splice so that the space is now considered occupied
       const [x, y] = numParse(freeCells.splice(index, 1)[0].split(','));
-      const mob = new Entity(x, y, this.game, char, alignment);
+      const mob = new Entity(x, y, this.game, stats);
       this.entityLocals[x + "," + y] = mob;
       return mob;
     };

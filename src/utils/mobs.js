@@ -1,45 +1,80 @@
 const mobs = {
   rat: {
-    name: "rat",
     weight: 8,
-    char: "r",
-    alignment: "neutral",
+    stats: {
+      name: "rat",
+      alignment: "neutral",
+      char: "r",
+      strength: 1,
+      toughness: 2,
+      wounds: 1,
+    }
   },
   goblin: {
-    name: "goblin",
     weight: 6,
-    char: "g",
-    alignment: "enemy"
+    stats: {
+      name: "goblin",
+      alignment: "enemy",
+      char: "g",
+      strength: 2,
+      toughness: 3,
+      wounds: 1,
+    }
   }, 
   orc: {
-    name: "orc",
     weight: 4,
-    char: "o",
-    alignment: "enemy"
+    stats: {
+      name: "orc",
+      alignment: "enemy",
+      char: "o",
+      strength: 3,
+      toughness: 4,
+      wounds: 2,
+    }
   },
   ogre: {
-    name: "ogre",
     weight: 2,
-    char: "O",
-    alignment: "enemy"
+    stats: {
+      name: "ogre",
+      char: "O",
+      alignment: "enemy",
+      strength: 4,
+      toughness: 5,
+      wounds: 3,
+    }
   },
   guard: {
-    name: "prison guard",
     weight: 5,
-    char: "u",
-    alignment: "enemy"
+    stats: {
+      name: "prison guard",
+      alignment: "enemy",
+      char: "u",
+      strength: 3,
+      toughness: 3,
+      wounds: 2,
+    }
   },
   prisoner: {
-    name: "human prisoner",
     weight: 6,
-    char: "p",
-    alignment: "neutral"
+    stats: {
+      name: "human prisoner",
+      alignment: "neutral",
+      char: "p",
+      strength: 2,
+      toughness: 2,
+      wounds: 1,
+    }
   }, 
   guardDog: {
-    name: "guard dog",
     weight: 7,
-    char: "d",
-    alignment: "enemy"
+    stats: {
+      name: "guard dog",
+      alignment: "enemy",
+      char: "d",
+      strength: 3,
+      toughness: 3,
+      wounds: 1,
+    }
   }
 };
 

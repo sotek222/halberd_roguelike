@@ -1,14 +1,23 @@
 import { Path, RNG, FOV } from 'rot-js';
 
 class Mob {
-  constructor(x, y, game, char = "⚉", alignment = "neutral"){
+  constructor(x, y, game, stats = {
+    name: "unkown",
+    alignment: "neutral",
+    char: "⚉",
+    strength: 2,
+    toughness: 2,
+    wounds: 1,
+  }){
     this._x = x;
     this._y = y;
     this.game = game;
-    this.char = char;
     this.fov = null;
-
-    this.alignment = alignment;
+    
+    // --- characteristics --- 
+    this.alignment = stats.alignment;
+    this.char = stats.char;
+    this.name = stats.name;
 
     switch (this.alignment) {
       case "ally":
@@ -130,7 +139,7 @@ class Mob {
     // so we remove the first coordinates 
     path.shift();
     if (path.length == 1) {
-      console.log("THE MOB ATTACKS")
+      this.game.display.drawText(0,0, `${this.name} attacks`)
       // TODO: When the enemy nears the player attack
       // console.log("Game over")
       // location.reload();
