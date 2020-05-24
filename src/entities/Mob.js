@@ -1,4 +1,4 @@
-import { Path, RNG } from 'rot-js';
+import { Path, RNG, FOV } from 'rot-js';
 
 class Mob {
   constructor(x, y, game, char = "⚉", alignment = "neutral"){
@@ -6,6 +6,7 @@ class Mob {
     this._y = y;
     this.game = game;
     this.char = char;
+    this.fov = null;
 
     this.alignment = alignment;
 
@@ -33,89 +34,105 @@ class Mob {
   }
 
   _draw() {
+    this.updateVisibility();
     this.game.display.draw(this.x, this.y, this.char, this.color);
   }
 
   act(){
     switch (this.alignment) {
       case "enemy":
-        this._moveTowardsPlayer();
+        if (this._playerIsInFOV()){
+          this._moveTowardsPlayer();
+        } else {
+          this._draw();
+        }
         break;
       default:
         this._wander();
         break;
     }
-    
-
   }
+
+  updateVisibility() {
+    // returns true if light is able to pass through 
+    function lightPasses(x, y) {
+      const key = x + "," + y;
+      return key in this.game.currentLevel.map
+    };
+    const sight = {};
+
+    const fov = new FOV.PreciseShadowcasting(lightPasses.bind(this));
+    // output callback 
+    fov.compute(this.x, this.y, 5, function (x, y, r, visibility) {
+      if (r) {
+        sight[x + "," + y] = true; 
+      };
+    }.bind(this));
+
+    this.fov = sight;
+  }
+
+
 
   _wander(){
-    const map = Object.keys(this.game.currentLevel.map);
-    let [x, y] = map[Math.floor(RNG.getUniform() * map.length)];
+    const radius = [
+      // top left corner
+      (this.x - 1) + "," + (this.y + 1),
+      // top middle 
+      this.x + "," + (this.y + 1),
+      // top right corner
+      (this.x + 1) + "," + (this.y + 1),
+      // mid left
+      (this.x - 1) + "," + this.y,
+      // center
+      this.x + "," + this.y,
+      // mid right
+      (this.x + 1) + "," + this.y, 
+      // bottom left corner
+      (this.x - 1) + "," + (this.y - 1),
+      // bottom middle
+      (this.x) + "," + (this.y - 1),
+      // bottom right corner
+      (this.x + 1) + "," + (this.y - 1)
+    ]
 
-    function checkIfInMap(x, y) {
-      return (x + "," + y in this.game.currentLevel.map);
-    };
+    const randomPos = radius[Math.floor(RNG.getUniform() * radius.length)];
+    const [newX, newY] = randomPos.split(",");
 
-    // Path generating algorithm
-    const astar = new Path.AStar(x, y, checkIfInMap.bind(this), { topology: 4 });
-    const path = [];
-
-    function addToPath(x, y) {
-      path.push([x, y]);
-    };
-
-
-    astar.compute(this._x, this._y, addToPath);
-    // the mobs current position is also in the path 
-    // so we remove the first coordinates 
-    path.shift();
-
-    if (path.length == 1) {
-      console.log("Game over")
-      // location.reload();
-      this.game.engine.lock();
-    } else {
-      x = path[0][0];
-      y = path[0][1];
+    if(this._checkIfInMap(newX, newY)){
       this.game.display.draw(this._x, this._y, this.game.currentLevel.map[this._x + "," + this._y]);
-      this._x = x;
-      this._y = y;
+      this._x = parseInt(newX);
+      this._y = parseInt(newY);
       this._draw();
+    } else {
+      this._wander();
     };
-
   }
-
-
+  
   _moveTowardsPlayer(){
     // Get the players current coords
     let x = this.game.player.x;
     let y = this.game.player.y;
-
-    // while generating a path this 
-    // callback is used to determine when a wall is hit
-    function checkIfInMap(x, y) {
-      return (x + "," + y in this.game.currentLevel.map);
-    };
-
+    
     // Path generating algorithm
-    const astar = new Path.AStar(x, y, checkIfInMap.bind(this), { topology: 4 });
+    const astar = new Path.AStar(x, y, this._checkIfInMap.bind(this), { topology: 4 });
     const path = [];
-
+    
     function addToPath(x, y) {
       path.push([x, y]);
     };
-
-
+    
+    
     astar.compute(this._x, this._y, addToPath);
     // the mobs current position is also in the path 
     // so we remove the first coordinates 
     path.shift();
-
     if (path.length == 1) {
-      console.log("Game over")
+      console.log("THE MOB ATTACKS")
+      // TODO: When the enemy nears the player attack
+      // console.log("Game over")
       // location.reload();
-      this.game.engine.lock();
+      // this.game.engine.lock();
     } else {
       x = path[0][0];
       y = path[0][1];
@@ -124,6 +141,15 @@ class Mob {
       this._y = y;
       this._draw();
     };
+  }
+
+  _playerIsInFOV(){
+    return this.game.player.x + "," + this.game.player.y in this.fov;
+  }
+
+
+  _checkIfInMap(x, y) {
+    return (x + "," + y in this.game.currentLevel.map);
   }
 };
 

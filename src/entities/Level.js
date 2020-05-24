@@ -52,7 +52,7 @@ class Level {
     this.game.addPlayer(this._createEntity(Player, freeCells));
 
 
-    for(let i = 0; i < 10; i++){
+    for(let i = 0; i < 5; i++){
       const mob = mobs[RNG.getWeightedValue(mobWeightMap)];
       this.mobs.push(this._createEntity(Mob, freeCells, mob.char, mob.alignment));
     }
