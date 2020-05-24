@@ -41,11 +41,11 @@ class Mob {
   act(){
     switch (this.alignment) {
       case "enemy":
-        if (this._playerIsInFOV()){
+        if(this._playerIsInFOV()) {
           this._moveTowardsPlayer();
         } else {
           this._draw();
-        }
+        };
         break;
       default:
         this._wander();
@@ -101,8 +101,10 @@ class Mob {
 
     if(this._checkIfInMap(newX, newY)){
       this.game.display.draw(this._x, this._y, this.game.currentLevel.map[this._x + "," + this._y]);
+      delete this.game.currentLevel.entityLocals[this.x + "," + this.y];
       this._x = parseInt(newX);
       this._y = parseInt(newY);
+      this.game.currentLevel.entityLocals[this._x + "," + this._y] = this;
       this._draw();
     } else {
       this._wander();
@@ -136,9 +138,22 @@ class Mob {
     } else {
       x = path[0][0];
       y = path[0][1];
+
+      // If there is another entity in the direction its moving 
+      // dont let it move forward
+      if (x + "," + y in this.game.currentLevel.entityLocals) return;
+
+      // replace the current area with the tile 
       this.game.display.draw(this._x, this._y, this.game.currentLevel.map[this._x + "," + this._y]);
+
+      // remove the entity from its current position
+      delete this.game.currentLevel.entityLocals[this.x + "," + this.y];
+      // update the x and y of the entity
       this._x = x;
       this._y = y;
+      // update the position in the object
+      this.game.currentLevel.entityLocals[this._x + "," + this._y] = this;
+      // redraw the entity
       this._draw();
     };
   }

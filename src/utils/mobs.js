@@ -3,7 +3,7 @@ const mobs = {
     name: "rat",
     weight: 8,
     char: "r",
-    alignment: "neutral"
+    alignment: "neutral",
   },
   goblin: {
     name: "goblin",

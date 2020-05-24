@@ -6,6 +6,7 @@ import { mobs, mobWeightMap } from '../utils/mobs';
 
 class Level {
   constructor(game, tileSet){
+    this.entityLocals = {};
     this.map = {};
     this.wall = {};
     this.game = game;
@@ -74,14 +75,17 @@ class Level {
 
   _createEntity(Entity, freeCells, char, alignment){
     if (Entity.prototype === Player.prototype){
-      const [x, y] = numParse(freeCells.splice(0, 1)[0].split(','))
+      const [x, y] = numParse(freeCells.splice(0, 1)[0].split(','));
       this.player = new Entity(x, y, this.game);
+      this.entityLocals[x + "," + y] = this.player;
       return this.player;
     } else {
       const index = Math.floor(RNG.getUniform() * freeCells.length);
       // we use splice so that the space is now considered occupied
-      const [x, y] = numParse(freeCells.splice(index, 1)[0].split(','))
-      return new Entity(x, y, this.game, char, alignment);
+      const [x, y] = numParse(freeCells.splice(index, 1)[0].split(','));
+      const mob = new Entity(x, y, this.game, char, alignment);
+      this.entityLocals[x + "," + y] = mob;
+      return mob;
     };
   }
 

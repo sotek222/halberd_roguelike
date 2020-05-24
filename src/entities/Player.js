@@ -29,6 +29,7 @@ class Player {
   }
 
   _draw(){
+    console.log(this.game.currentLevel.entityLocals);
     this.updateVisibility();
     this.game.display.draw(this.x, this.y, this.char, "#0f0");
   }
@@ -48,10 +49,13 @@ class Player {
     const newY = this._y + dir[1];
     const newLocation = newX + "," + newY;
     if (!(newLocation in this.game.currentLevel.map)) return;
+    if (newLocation in this.game.currentLevel.entityLocals) return;
 
     this.game.display.draw(this._x, this._y, this.game.currentLevel.map[`${this._x},${this._y}`]);
+    delete this.game.currentLevel.entityLocals[this.x + "," + this.y];
     this._x = newX;
     this._y = newY;
+    this.game.currentLevel.entityLocals[this._x + "," + this._y] = this;
     this._draw();
 
     window.removeEventListener("keydown", this.ref)
