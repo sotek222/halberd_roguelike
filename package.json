@@ -4,7 +4,7 @@
   "description": "A Halberd fantasy roguelike",
   "main": "/src/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --watch --config jest.config.js",
     "build": "webpack --config=webpack.prod.js",
     "start": "webpack-dev-server --config=webpack.dev.js --open"
   },
@@ -15,27 +15,22 @@
   ],
   "author": "Matthew Masiello",
   "license": "ISC",
-  "jest": {
-    "testEnvironment": "jsdom",
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
-    }
-  },
   "devDependencies": {
+    "@babel/core": "^7.9.6",
     "@babel/preset-env": "^7.9.5",
+    "babel-jest": "^26.0.1",
     "exports-loader": "^0.7.0",
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^4.0.4",
+    "jest-canvas-mock": "^2.2.0",
+    "jest-environment-jsdom-fourteen": "^1.0.1",
     "style-loader": "^1.1.3",
     "url-loader": "^4.1.0",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
+    "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "@babel/core": "^7.9.0",
-    "babel-jest": "^25.2.6",
     "rot-js": "^2.1.1"
   }
 }
