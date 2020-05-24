@@ -9,6 +9,7 @@ class Mob {
     toughness: 2,
     wounds: 1,
   }){
+
     this._x = x;
     this._y = y;
     this.game = game;
@@ -18,6 +19,9 @@ class Mob {
     this.alignment = stats.alignment;
     this.char = stats.char;
     this.name = stats.name;
+    this.strength = stats.strength;
+    this.toughness = stats.toughness;
+    this.wounds = stats.wounds;
 
     switch (this.alignment) {
       case "ally":
@@ -43,7 +47,7 @@ class Mob {
   }
 
   _draw() {
-    this.updateVisibility();
+    this._updateVisibility();
     this.game.display.draw(this.x, this.y, this.char, this.color);
   }
 
@@ -62,7 +66,7 @@ class Mob {
     }
   }
 
-  updateVisibility() {
+  _updateVisibility() {
     // returns true if light is able to pass through 
     function lightPasses(x, y) {
       const key = x + "," + y;
@@ -80,8 +84,6 @@ class Mob {
 
     this.fov = sight;
   }
-
-
 
   _wander(){
     const radius = [

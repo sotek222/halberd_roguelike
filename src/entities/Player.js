@@ -29,8 +29,7 @@ class Player {
   }
 
   _draw(){
-    console.log(this.game.currentLevel.entityLocals);
-    this.updateVisibility();
+    this._updateVisibility();
     this.game.display.draw(this.x, this.y, this.char, "#0f0");
   }
   
@@ -62,7 +61,7 @@ class Player {
     this.game.engine.unlock();
   }
 
-  updateVisibility(){
+  _updateVisibility(){
     this.game.currentLevel.redraw();
     // returns true if light is able to pass through 
     function lightPasses(x, y) {
