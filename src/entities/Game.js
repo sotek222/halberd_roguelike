@@ -13,7 +13,8 @@ class Game {
     this.engine = null;
 
     // attaches the canvas element onto the dom
-    document.querySelector('#game-container').insertAdjacentElement('beforeend', this.display.getContainer());
+    document.ondomcontentloaded = () => document.querySelector('#game-container').insertAdjacentElement('beforeend', this.display.getContainer());
+  
   }
 
   init(){
