@@ -16,14 +16,9 @@ class Mob {
     this.fov = null;
     
     // --- characteristics --- 
-    this.alignment = stats.alignment;
-    this.char = stats.char;
-    this.name = stats.name;
-    this.strength = stats.strength;
-    this.toughness = stats.toughness;
-    this.wounds = stats.wounds;
+    this._stats = stats;
 
-    switch (this.alignment) {
+    switch (this._stats.alignment) {
       case "ally":
         this.color = "#0ff";
         break;
@@ -38,6 +33,7 @@ class Mob {
     this._draw();
   }
 
+  /* Attribute GETTERS */
   get x() {
     return this._x;
   }
@@ -46,6 +42,32 @@ class Mob {
     return this._y;
   }
 
+  get alignment(){
+    return this._stats.alignment;
+  }
+
+  get char(){
+    return this._stats.char;
+  }
+
+  get name(){
+    return this._stats.name;
+  }
+
+  get strength(){
+    return this._stats.strength;
+  }
+
+  get toughness(){
+    return this._stats.toughness;
+  }
+
+  get wounds(){
+    return this._stats.wounds;
+  }
+
+
+  /*  ACTIONS */ 
   _draw() {
     this._updateVisibility();
     this.game.display.draw(this.x, this.y, this.char, this.color);
@@ -169,10 +191,10 @@ class Mob {
     };
   }
 
+  /* HELPERS */
   _playerIsInFOV(){
     return this.game.player.x + "," + this.game.player.y in this.fov;
   }
-
 
   _checkIfInMap(x, y) {
     return (x + "," + y in this.game.currentLevel.map);

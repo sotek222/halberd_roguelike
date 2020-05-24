@@ -1,11 +1,17 @@
 import { DIRS, FOV } from 'rot-js';
 
 class Player {
-  constructor(x, y, game, char = "☺︎"){
+  constructor(x, y, game, stats = {
+    char: "☺︎",
+    wounds: 4,
+    strength: 3,
+    toughness: 3
+  }){
     this._x = x; 
     this._y = y;
     this.game = game;
-    this.char = char
+    this._stats = stats;
+
     this.keyMap = {
       '38': 0,
       '33': 1,
@@ -26,6 +32,22 @@ class Player {
 
   get y(){
     return this._y;
+  }
+
+  get char(){
+    return this._stats.char;
+  }
+
+  get wounds(){
+    return this._stats.wounds;
+  }
+
+  get strength(){
+    return this._stats.strength;
+  }
+
+  get toughness(){
+    return this._stats.toughness;
   }
 
   _draw(){
