@@ -11,6 +11,7 @@ class Game {
     this.player = null;
     // This will store the game loop engine
     this.engine = null;
+    this.scheduler = null;
 
     // attaches the canvas element onto the dom
     document.addEventListener('DOMContentLoaded', () => {
@@ -22,16 +23,16 @@ class Game {
     // sets the first level
     this.currentLevel = new Level(this);
     this.currentLevel.init();
-    const scheduler = new Scheduler.Simple();
+    this.scheduler = new Scheduler.Simple();
     // adds the player to the scheduler
     // the second argument indicates that
     // the entity is a recurring event
-    scheduler.add(this.player, true);
+    this.scheduler.add(this.player, true);
     for (const mob of this.currentLevel.mobs) {
-      scheduler.add(mob, true);
+      this.scheduler.add(mob, true);
     };
     // creates the game engine
-    this.engine = new Engine(scheduler);
+    this.engine = new Engine(this.scheduler);
     this.engine.start();
   }
 

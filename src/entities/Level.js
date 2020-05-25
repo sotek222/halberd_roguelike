@@ -98,6 +98,10 @@ class Level {
     this.game.display.draw(x, y, "∏");
   }
 
+  removeMob(mobToRemove){
+    this.mobs = this.mobs.filter(mob => mob === mobToRemove);
+  }
+
   redraw(){
     this._generateWholeMap();
   }

@@ -63,5 +63,6 @@ describe('Tests Player instance methods', () => {
     window.dispatchEvent(new KeyboardEvent('keydown', { 'keyCode': 40 }));
     expect(spy).toHaveBeenCalled();
   });
+
 });
 

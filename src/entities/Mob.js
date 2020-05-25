@@ -34,7 +34,7 @@ class Mob {
     this._draw();
   }
 
-  /* Attribute GETTERS */
+  /* Attribute GETTERS && SETTERS */
   get x() {
     return this._x;
   }
@@ -203,7 +203,22 @@ class Mob {
     };
   }
 
+  takeDamage(amount){
+    this.wounds = this.wounds - amount;
+    if(this.wounds <= 0){
+      this._remove();
+    };
+  }
+  
   /* HELPERS */
+  
+  _remove(){
+    this.game.scheduler.remove(this);
+    this.game.display.draw(this.x, this.y, this.game.currentLevel.map[formatCoords(this.x, this.y)]);
+    delete this.game.currentLevel.entityLocals[formatCoords(this.x, this.y)];
+    this.game.currentLevel.removeMob(this);
+  }
+
   _playerIsInFOV(){
     return formatCoords(this.game.player.x, this.game.player.y) in this.fov;
   }

@@ -72,8 +72,8 @@ class Player {
   }
 
   _attack(entity){
-    entity.wounds--;
-      // TODO: create an instance method tha delivers damage to a mob
+    this.game.display.drawText(0, 0, `you attack the ${entity.name} causing 1 damage!`);
+    entity.takeDamage(1);
       // TODO: figure out a way to determine attack damage
   }
 
@@ -91,7 +91,7 @@ class Player {
       return;
     }
 
-    this.game.display.draw(this.x, this.y, this.game.currentLevel.map[formatCoords(this.x, this.y)]);
+    // this.game.display.draw(this.x, this.y, this.game.currentLevel.map[formatCoords(this.x, this.y)]);
     delete this.game.currentLevel.entityLocals[formatCoords(this.x, this.y)];
     this.x = newX;
     this.y = newY;
