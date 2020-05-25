@@ -1,4 +1,3 @@
-import { Map, RNG } from 'rot-js';
 import Player from '../../src/entities/Player';
 import Game from '../../src/entities/Game';
 import Mob from '../../src/entities/Mob';
@@ -11,16 +10,6 @@ beforeAll(() => {
   game = new Game();
   game.init();
   player = game.player;
-
-
-  map = new Map.Uniform();
-  function dungeonTileCreator(x, y, value) {
-    if (value) {
-      return;
-    }
-  };
-
-  map.create(dungeonTileCreator);
 });
 
 describe('Tests player instance properties', () => {
@@ -68,11 +57,11 @@ describe('Tests Player instance methods', () => {
   });
 
   test('player can attack an enemy', () => {
-    const room = map.getRooms()[0];
-    const newPlayer = new Player(room.getLeft(), room.getTop(), game);
-    const newMob = new Mob(room.getLeft(), room.getTop() + 1, game);
-    newPlayer._attack(newMob.x, newMob.y);
-    expect(newMob.wounds).toEqual(0)
+    const newMob = new Mob(player.x, player.y + 1, game);
+    game.currentLevel.entityLocals[newMob.x + "," + newMob.y] = newMob;
+    const spy = jest.spyOn(player, '_attack');
+    window.dispatchEvent(new KeyboardEvent('keydown', { 'keyCode': 40 }));
+    expect(spy).toHaveBeenCalled();
   });
 });
 
