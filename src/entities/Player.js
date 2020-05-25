@@ -6,8 +6,10 @@ class Player {
   constructor(x, y, game, stats = {
     char: "☺︎",
     wounds: 4,
+    weaponSkill: 3,
     strength: 3,
-    toughness: 3
+    toughness: 3,
+    armourSave: 5
   }){
     this._x = x; 
     this._y = y;
@@ -52,6 +54,14 @@ class Player {
     return this._stats.wounds;
   }
 
+  get weaponSkill(){
+    return this._stats.weaponSkill;
+  }
+
+  get armourSave(){
+    return this._stats.armourSave;
+  }
+
   get strength(){
     return this._stats.strength;
   }
@@ -61,6 +71,7 @@ class Player {
   }
 
   _draw(){
+    console.log(this);
     this._updateVisibility();
     this.game.display.draw(this.x, this.y, this.char, "#0f0");
   }
