@@ -6,8 +6,10 @@ class Mob {
     name: "unkown",
     alignment: "neutral",
     char: "⚉",
+    weaponSkill: 2,
     strength: 2,
     toughness: 2,
+    armourSave: 7,
     wounds: 1,
   }){
 
@@ -63,12 +65,20 @@ class Mob {
     return this._stats.name;
   }
 
+  get weaponSkill(){
+    return this._stats.weaponSkill;
+  }
+
   get strength(){
     return this._stats.strength;
   }
 
   get toughness(){
     return this._stats.toughness;
+  }
+
+  get armourSave(){
+    return this._stats.armourSave;
   }
 
   get wounds(){

@@ -5,8 +5,10 @@ const mobs = {
       name: "rat",
       alignment: "neutral",
       char: "r",
+      weaponSkill: 2,
       strength: 1,
       toughness: 2,
+      armourSave: 7,
       wounds: 1,
     }
   },
@@ -16,8 +18,10 @@ const mobs = {
       name: "goblin",
       alignment: "enemy",
       char: "g",
+      weaponSkill: 2,
       strength: 2,
       toughness: 3,
+      armourSave: 6,
       wounds: 1,
     }
   }, 
@@ -27,8 +31,10 @@ const mobs = {
       name: "orc",
       alignment: "enemy",
       char: "o",
+      weaponSkill: 3,
       strength: 3,
       toughness: 4,
+      armourSave: 6,
       wounds: 2,
     }
   },
@@ -38,8 +44,10 @@ const mobs = {
       name: "ogre",
       char: "O",
       alignment: "enemy",
+      weaponSkill: 3,
       strength: 4,
       toughness: 5,
+      armourSave: 6,
       wounds: 3,
     }
   },
@@ -49,8 +57,10 @@ const mobs = {
       name: "prison guard",
       alignment: "enemy",
       char: "u",
+      weaponSkill: 3,
       strength: 3,
       toughness: 3,
+      armourSave: 5,
       wounds: 2,
     }
   },
@@ -60,8 +70,10 @@ const mobs = {
       name: "human prisoner",
       alignment: "neutral",
       char: "p",
+      weaponSkill: 2,
       strength: 2,
       toughness: 2,
+      armourSave: 7,
       wounds: 1,
     }
   }, 
@@ -71,8 +83,10 @@ const mobs = {
       name: "guard dog",
       alignment: "enemy",
       char: "d",
+      weaponSkill: 3,
       strength: 3,
       toughness: 3,
+      armourSave: 7,
       wounds: 1,
     }
   }
