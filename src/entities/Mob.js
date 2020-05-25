@@ -1,4 +1,5 @@
 import { Path, RNG, FOV } from 'rot-js';
+import { formatCoords } from '../utils/helpers';
 
 class Mob {
   constructor(x, y, game, stats = {
@@ -38,8 +39,16 @@ class Mob {
     return this._x;
   }
 
+  set x(arg) {
+    this._x = arg;
+  }
+
   get y() {
     return this._y;
+  }
+
+  set y(arg) {
+    this._y = arg;
   }
 
   get alignment(){
@@ -94,7 +103,7 @@ class Mob {
   _updateVisibility() {
     // returns true if light is able to pass through 
     function lightPasses(x, y) {
-      const key = x + "," + y;
+      const key = formatCoords(x, y);
       return key in this.game.currentLevel.map
     };
     const sight = {};
@@ -113,34 +122,34 @@ class Mob {
   _wander(){
     const radius = [
       // top left corner
-      (this.x - 1) + "," + (this.y + 1),
+      formatCoords(this.x - 1, this.y - 1),
       // top middle 
-      this.x + "," + (this.y + 1),
+      formatCoords(this.x, this.y - 1),
       // top right corner
-      (this.x + 1) + "," + (this.y + 1),
+      formatCoords(this.x + 1,this.y - 1),
       // mid left
-      (this.x - 1) + "," + this.y,
+      formatCoords(this.x - 1, this.y),
       // center
-      this.x + "," + this.y,
+      formatCoords(this.x, this.y),
       // mid right
-      (this.x + 1) + "," + this.y, 
+      formatCoords(this.x + 1, this.y), 
       // bottom left corner
-      (this.x - 1) + "," + (this.y - 1),
+      formatCoords(this.x - 1,this.y + 1),
       // bottom middle
-      (this.x) + "," + (this.y - 1),
+      formatCoords(this.x, this.y + 1),
       // bottom right corner
-      (this.x + 1) + "," + (this.y - 1)
+      formatCoords(this.x + 1, this.y + 1),
     ]
 
     const randomPos = radius[Math.floor(RNG.getUniform() * radius.length)];
     const [newX, newY] = randomPos.split(",");
 
     if(this._checkIfInMap(newX, newY)){
-      this.game.display.draw(this._x, this._y, this.game.currentLevel.map[this._x + "," + this._y]);
-      delete this.game.currentLevel.entityLocals[this.x + "," + this.y];
-      this._x = parseInt(newX);
-      this._y = parseInt(newY);
-      this.game.currentLevel.entityLocals[this._x + "," + this._y] = this;
+      this.game.display.draw(this.x, this.y, this.game.currentLevel.map[formatCoords(this.x, this.y)]);
+      delete this.game.currentLevel.entityLocals[formatCoords(this.x, this.y)];
+      this.x = parseInt(newX);
+      this.y = parseInt(newY);
+      this.game.currentLevel.entityLocals[formatCoords(this.x , this.y)] = this;
       this._draw();
     } else {
       this._wander();
@@ -161,7 +170,7 @@ class Mob {
     };
     
     
-    astar.compute(this._x, this._y, addToPath);
+    astar.compute(this.x, this.y, addToPath);
     // the mobs current position is also in the path 
     // so we remove the first coordinates 
     path.shift();
@@ -177,18 +186,18 @@ class Mob {
 
       // If there is another entity in the direction its moving 
       // dont let it move forward
-      if (x + "," + y in this.game.currentLevel.entityLocals) return;
+      if (formatCoords(x, y) in this.game.currentLevel.entityLocals) return;
 
       // replace the current area with the tile 
-      this.game.display.draw(this._x, this._y, this.game.currentLevel.map[this._x + "," + this._y]);
+      this.game.display.draw(this.x, this.y, this.game.currentLevel.map[formatCoords(this.x, this.y)]);
 
       // remove the entity from its current position
-      delete this.game.currentLevel.entityLocals[this.x + "," + this.y];
+      delete this.game.currentLevel.entityLocals[formatCoords(this.x, this.y)];
       // update the x and y of the entity
-      this._x = x;
-      this._y = y;
+      this.x = x;
+      this.y = y;
       // update the position in the object
-      this.game.currentLevel.entityLocals[this._x + "," + this._y] = this;
+      this.game.currentLevel.entityLocals[formatCoords(this.x, this.y)] = this;
       // redraw the entity
       this._draw();
     };
@@ -196,11 +205,11 @@ class Mob {
 
   /* HELPERS */
   _playerIsInFOV(){
-    return this.game.player.x + "," + this.game.player.y in this.fov;
+    return formatCoords(this.game.player.x, this.game.player.y) in this.fov;
   }
 
   _checkIfInMap(x, y) {
-    return (x + "," + y in this.game.currentLevel.map);
+    return (formatCoords(x, y) in this.game.currentLevel.map);
   }
 };
 

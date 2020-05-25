@@ -1,5 +1,6 @@
 import { DIRS, FOV } from 'rot-js';
 import Mob from './Mob';
+import { formatCoords } from '../utils/helpers';
 
 class Player {
   constructor(x, y, game, stats = {
@@ -31,8 +32,16 @@ class Player {
     return this._x;
   }
 
+  set x(arg){
+    this._x = arg;
+  }
+
   get y(){
     return this._y;
+  }
+  
+  set y(arg){
+    this._y = arg;
   }
 
   get char(){
@@ -75,18 +84,18 @@ class Player {
     const dir = DIRS[8][this.keyMap[e.keyCode]];
     const newX = this._x + dir[0];
     const newY = this._y + dir[1];
-    const newLocation = newX + "," + newY;
+    const newLocation = formatCoords(newX, newY);
     if (!(newLocation in this.game.currentLevel.map)) return;
     if (newLocation in this.game.currentLevel.entityLocals && this.game.currentLevel.entityLocals[newLocation] instanceof Mob){
       this._attack(this.game.currentLevel.entityLocals[newLocation]);
       return;
     }
 
-    this.game.display.draw(this._x, this._y, this.game.currentLevel.map[`${this._x},${this._y}`]);
-    delete this.game.currentLevel.entityLocals[this.x + "," + this.y];
-    this._x = newX;
-    this._y = newY;
-    this.game.currentLevel.entityLocals[this._x + "," + this._y] = this;
+    this.game.display.draw(this.x, this.y, this.game.currentLevel.map[formatCoords(this.x, this.y)]);
+    delete this.game.currentLevel.entityLocals[formatCoords(this.x, this.y)];
+    this.x = newX;
+    this.y = newY;
+    this.game.currentLevel.entityLocals[formatCoords(this.x, this.y)] = this;
     this._draw();
 
     window.removeEventListener("keydown", this.ref)
@@ -97,14 +106,14 @@ class Player {
     this.game.currentLevel.redraw();
     // returns true if light is able to pass through 
     function lightPasses(x, y) {
-      const key = x + "," + y;
+      const key = formatCoords(x, y);
       return key in this.game.currentLevel.map
     };
 
     const fov = new FOV.PreciseShadowcasting(lightPasses.bind(this));
     // output callback 
     fov.compute(this.x, this.y, 5, function (x, y, r, visibility) {
-      const mapChar = this.game.currentLevel.map[x + "," + y];
+      const mapChar = this.game.currentLevel.map[formatCoords(x, y)];
 
       let char;
       if (r) {
