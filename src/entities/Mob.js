@@ -66,6 +66,9 @@ class Mob {
     return this._stats.wounds;
   }
 
+  set wounds(amount){
+    this._stats.wounds = amount;
+  }
 
   /*  ACTIONS */ 
   _draw() {
