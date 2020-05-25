@@ -1,4 +1,5 @@
 import { DIRS, FOV } from 'rot-js';
+import Mob from './Mob';
 
 class Player {
   constructor(x, y, game, stats = {
@@ -61,6 +62,12 @@ class Player {
     window.addEventListener('keydown', this.ref);
   }
 
+  _attack(entity){
+    entity.wounds--;
+      // TODO: create an instance method tha delivers damage to a mob
+      // TODO: figure out a way to determine attack damage
+  }
+
   handleEvent(e) {
     if (!(e.keyCode in this.keyMap)) return;
     e.preventDefault();
@@ -70,7 +77,10 @@ class Player {
     const newY = this._y + dir[1];
     const newLocation = newX + "," + newY;
     if (!(newLocation in this.game.currentLevel.map)) return;
-    if (newLocation in this.game.currentLevel.entityLocals) return;
+    if (newLocation in this.game.currentLevel.entityLocals && this.game.currentLevel.entityLocals[newLocation] instanceof Mob){
+      this._attack(this.game.currentLevel.entityLocals[newLocation]);
+      return;
+    }
 
     this.game.display.draw(this._x, this._y, this.game.currentLevel.map[`${this._x},${this._y}`]);
     delete this.game.currentLevel.entityLocals[this.x + "," + this.y];
