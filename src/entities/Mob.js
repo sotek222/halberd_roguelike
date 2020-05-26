@@ -1,6 +1,7 @@
 import { Path, RNG, FOV } from 'rot-js';
 import { formatCoords } from '../utils/helpers';
 
+// TODO: this class is very similar to the Player class, maybe it should inherit from a parent
 class Mob {
   constructor(x, y, game, stats = {
     name: "unkown",
@@ -93,6 +94,7 @@ class Mob {
   _draw() {
     this._updateVisibility();
     this.game.display.draw(this.x, this.y, this.char, this.color);
+    return new Promise(result => result, reject => reject);
   }
 
   act(){
@@ -164,6 +166,7 @@ class Mob {
     } else {
       this._wander();
     };
+
   }
   
   _moveTowardsPlayer(){
@@ -185,22 +188,21 @@ class Mob {
     // so we remove the first coordinates 
     path.shift();
     if (path.length == 1) {
-      this.game.display.drawText(0,0, `${this.name} attacks`)
-      // TODO: When the enemy nears the player attack
-      // console.log("Game over")
-      // location.reload();
-      // this.game.engine.lock();
+      this._draw();
+      this._attack(this.game.currentLevel.entityLocals[path[0].join()])
     } else {
       x = path[0][0];
       y = path[0][1];
-
       // If there is another entity in the direction its moving 
       // dont let it move forward
-      if (formatCoords(x, y) in this.game.currentLevel.entityLocals) return;
-
+      if (formatCoords(x, y) in this.game.currentLevel.entityLocals) {
+        this._draw();
+        return;
+      };
+      
       // replace the current area with the tile 
       this.game.display.draw(this.x, this.y, this.game.currentLevel.map[formatCoords(this.x, this.y)]);
-
+      
       // remove the entity from its current position
       delete this.game.currentLevel.entityLocals[formatCoords(this.x, this.y)];
       // update the x and y of the entity
@@ -212,10 +214,19 @@ class Mob {
       this._draw();
     };
   }
+  
+  _attack(entity) { 
+    console.log(`${this.name} attacks you!`)
+    this.game.displayText(`${this.name} attacks you!`);
+    this.game.currentLevel.fightRoundOfCombat(this, entity);
+  }
 
   takeDamage(amount){
+    console.log(`The ${this.name} takes ${amount} wound!`)
+    this.game.displayText(`The ${this.name} takes ${amount} wound!`);
     this.wounds = this.wounds - amount;
     if(this.wounds <= 0){
+      this.game.displayText(`The ${this.name} is slain!`);
       this._remove();
     };
   }

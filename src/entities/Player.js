@@ -2,6 +2,7 @@ import { DIRS, FOV } from 'rot-js';
 import Mob from './Mob';
 import { formatCoords } from '../utils/helpers';
 
+// TODO: this class is very similar to the Mob class, maybe it should inherit from a parent
 class Player {
   constructor(x, y, game, stats = {
     char: "☺︎",
@@ -54,6 +55,10 @@ class Player {
     return this._stats.wounds;
   }
 
+  set wounds(amount){
+    this._stats.wounds = amount;
+  }
+
   get weaponSkill(){
     return this._stats.weaponSkill;
   }
@@ -71,7 +76,6 @@ class Player {
   }
 
   _draw(){
-    console.log(this);
     this._updateVisibility();
     this.game.display.draw(this.x, this.y, this.char, "#0f0");
   }
@@ -81,17 +85,28 @@ class Player {
     this.ref = this.handleEvent.bind(this);
     window.addEventListener('keydown', this.ref);
   }
-
+  
   _attack(entity){
-    this.game.display.drawText(0, 0, `you attack the ${entity.name} causing 1 damage!`);
-    entity.takeDamage(1);
-      // TODO: figure out a way to determine attack damage
+    console.log(`you attack the ${entity.name}`);
+    this.game.displayText(`you attack the ${entity.name}`);
+    this.game.currentLevel.fightRoundOfCombat(this, entity);
   }
-
+  
+  takeDamage(amount) {
+    console.log(`You take ${amount} wound! total Left: `, this.wounds);
+    this.game.displayText(`You take ${amount} wound!`);
+    this.wounds = this.wounds - amount;
+    if (this.wounds <= 0) {
+      console.log(`You are slain! Game Over :(`, this.wounds);
+      this.game.displayText(`You are slain! Game Over :(`);
+      this.game.engine.lock();
+    };
+  }
+  
   handleEvent(e) {
     if (!(e.keyCode in this.keyMap)) return;
     e.preventDefault();
-
+    
     const dir = DIRS[8][this.keyMap[e.keyCode]];
     const newX = this._x + dir[0];
     const newY = this._y + dir[1];
@@ -99,6 +114,8 @@ class Player {
     if (!(newLocation in this.game.currentLevel.map)) return;
     if (newLocation in this.game.currentLevel.entityLocals && this.game.currentLevel.entityLocals[newLocation] instanceof Mob){
       this._attack(this.game.currentLevel.entityLocals[newLocation]);
+      window.removeEventListener("keydown", this.ref)
+      this.game.engine.unlock();
       return;
     }
 

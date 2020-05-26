@@ -59,38 +59,11 @@ function rollD6() {
   return Math.floor(Math.random() * 6) + 1;
 };
 
-function fightRoundOfCombat(attacker, defender) {
-  if (defender.wounds <= 0) return;
-  console.log(`The ${attacker.name} attacks the ${defender.name}`);
-
-  const successfullyHit = rollD6() >= getRollToHit(attacker.weaponSkill, defender.weaponSkill);
-
-  if (successfullyHit) {
-    console.log(`The ${defender.name} is hit!`);
-    const successfullyWounded = rollD6() >= getRollToWound(attacker.strength, defender.toughness);
-
-    if (successfullyWounded) {
-      const madeSave = rollD6() >= getSavingThrow(attacker.strength, defender.armourSave);
-      if (madeSave) {
-        console.log(`The ${attacker.name}'s attack bounces harmlessly off the ${defender.name}'s armour!`);
-        return;
-      } else {
-        console.log(`The ${defender.name} has taken a wound!!!`);
-        defender.wounds--;
-      }
-
-    } else {
-      console.log(`The ${attacker.name} fails to wound the ${defender.name}`);
-      return;
-    }
-
-  } else {
-    console.log(`The ${attacker.name} misses!`);
-    return;
-  }
-};
-
 export {
   numParse,
-  formatCoords
+  formatCoords,
+  rollD6,
+  getRollToHit,
+  getRollToWound,
+  getSavingThrow
 };

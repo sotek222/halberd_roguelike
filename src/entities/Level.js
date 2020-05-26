@@ -1,7 +1,12 @@
 import { Map, RNG } from 'rot-js';
 import Player from './Player';
 import Mob from './Mob';
-import { numParse } from '../utils/helpers';
+import {
+  numParse, 
+  rollD6, 
+  getRollToHit,
+  getRollToWound,
+  getSavingThrow } from '../utils/helpers';
 import { mobs, mobWeightMap } from '../utils/mobs';
 
 class Level {
@@ -104,6 +109,32 @@ class Level {
 
   redraw(){
     this._generateWholeMap();
+  }
+
+  fightRoundOfCombat(attacker, defender){
+    const successfullyHit = rollD6() >= getRollToHit(attacker.weaponSkill, defender.weaponSkill);
+
+    if (successfullyHit) {
+      const successfullyWounded = rollD6() >= getRollToWound(attacker.strength, defender.toughness);
+
+      if (successfullyWounded) {
+        const madeSave = rollD6() >= getSavingThrow(attacker.strength, defender.armourSave);
+        if (madeSave) {
+          console.log(attacker instanceof Player ? `Your attack bounces off the ${defender.name}'s armour` : `The ${attacker.name}'s attack bounces off your armour!`);
+          this.game.displayText(attacker instanceof Player ? `Your attack bounces off the ${defender.name}'s armour` : `The ${attacker.name}'s attack bounces off your armour!`);
+          return;
+        } else {
+          defender.takeDamage(1);
+        };
+      } else {
+        console.log("failed to wound")
+        return;
+      };
+    } else {
+      console.log(attacker instanceof Player ? `You miss the ${defender.name}` : `The ${attacker.name} misses!`);
+      this.game.displayText(attacker instanceof Player ? `You miss the ${defender.name}` : `The ${attacker.name} misses!` );
+      return;
+    };
   }
 
 };

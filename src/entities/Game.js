@@ -39,6 +39,17 @@ class Game {
   addPlayer(player){
     this.player = player
   }
+
+  displayText(text){
+      for (let i = 0; i < this.display.getContainer().width; i++) {
+        this.display.draw(i, 0, " ");
+      }
+  
+  
+      for (let i = 0; i < text.length; i++) {
+        this.display.draw(i, 0, text[i]);
+      }
+  }
 };
 
 export default Game;
