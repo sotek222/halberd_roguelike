@@ -24,7 +24,7 @@ const mobs = {
       armourSave: 6,
       wounds: 1,
     }
-  }, 
+  },
   orc: {
     weight: 4,
     stats: {
@@ -76,7 +76,7 @@ const mobs = {
       armourSave: 7,
       wounds: 1,
     }
-  }, 
+  },
   guardDog: {
     weight: 7,
     stats: {

@@ -6,7 +6,8 @@ import {
   rollD6,
   getRollToHit,
   getRollToWound,
-  getSavingThrow
+  getSavingThrow,
+  formatCoords
 } from '../utils/helpers';
 import { mobs, mobWeightMap } from '../utils/mobs';
 
@@ -35,12 +36,11 @@ class Level {
     function dungeonTileCreator(x, y, value) {
       // value can be either 1 or 0
       if (value) {
-        const key = [x, y].join();
-        this.wall[key] = "";
+        this.wall[formatCoords(x, y)] = "";
         return;
       }
 
-      const key = [x, y].join();
+      const key = formatCoords(x, y);
       // we push this key into freeCells so we know which spaces 
       // are part of the dungeon
       freeCells.push(key);
@@ -56,12 +56,18 @@ class Level {
     // this method is used to actually render the map in the canvas
     this._generateWholeMap();
     // add the player to the level and the game as a whole
-    this.game.addPlayer(this._createEntity(Player, freeCells));
+    const player = Player.create(this.game, freeCells);
+    this.player = player
+    this.entityLocals[formatCoords(this.player.x, this.player.y)] = this.player;
+    this.game.addPlayer(player);
 
 
     for (let i = 0; i < 5; i++) {
       const mob = mobs[RNG.getWeightedValue(mobWeightMap)];
-      this.mobs.push(this._createEntity(Mob, freeCells, mob.stats));
+      const createdMob = Mob.create(this.game, freeCells, mob.stats);
+      this.entityLocals[formatCoords(createdMob.x, createdMob.y)] = createdMob;
+      console.log(createdMob);
+      this.mobs.push(createdMob);
     }
 
     // add the exit to the end of the map
@@ -77,23 +83,6 @@ class Level {
       const [x, y] = numParse(key.split(","))
       this.game.display.draw(x, y, this.wall[key]);
     }
-  }
-
-  // TODO: Remove from level, add as class method
-  _createEntity(Entity, freeCells, stats) {
-    if (Entity.prototype === Player.prototype) {
-      const [x, y] = numParse(freeCells.splice(0, 1)[0].split(','));
-      this.player = new Entity(x, y, this.game);
-      this.entityLocals[x + "," + y] = this.player;
-      return this.player;
-    } else {
-      const index = Math.floor(RNG.getUniform() * freeCells.length);
-      // we use splice so that the space is now considered occupied
-      const [x, y] = numParse(freeCells.splice(index, 1)[0].split(','));
-      const mob = new Entity(x, y, this.game, stats);
-      this.entityLocals[x + "," + y] = mob;
-      return mob;
-    };
   }
 
   _createExit(freeCells) {

@@ -2,7 +2,7 @@ import { Scheduler, Engine, Display } from 'rot-js';
 import Level from './Level';
 
 class Game {
-  constructor(){
+  constructor() {
     // the Display class comes from rot.js
     // it creates a canvas element
     this.display = new Display();
@@ -19,7 +19,7 @@ class Game {
     })
   }
 
-  init(){
+  init() {
     // sets the first level
     this.currentLevel = new Level(this);
     this.currentLevel.init();
@@ -36,19 +36,19 @@ class Game {
     this.engine.start();
   }
 
-  addPlayer(player){
+  addPlayer(player) {
     this.player = player
   }
 
-  displayText(text){
-      for (let i = 0; i < this.display.getContainer().width; i++) {
-        this.display.draw(i, 0, " ");
-      }
-  
-  
-      for (let i = 0; i < text.length; i++) {
-        this.display.draw(i, 0, text[i]);
-      }
+  displayText(text) {
+    for (let i = 0; i < this.display.getContainer().width; i++) {
+      this.display.draw(i, 0, " ");
+    }
+
+
+    for (let i = 0; i < text.length; i++) {
+      this.display.draw(i, 0, text[i]);
+    }
   }
 };
 

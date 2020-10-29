@@ -3,7 +3,7 @@ function numParse(arr) {
 };
 
 function formatCoords(x, y) {
-  return x + "," + y;
+  return [x, y].join();
 };
 
 function getRollToHit(attackerWeaponSkill, defenderWeaponSkill) {
