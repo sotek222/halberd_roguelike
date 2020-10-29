@@ -2,15 +2,16 @@ import { Map, RNG } from 'rot-js';
 import Player from './Player';
 import Mob from './Mob';
 import {
-  numParse, 
-  rollD6, 
+  numParse,
+  rollD6,
   getRollToHit,
   getRollToWound,
-  getSavingThrow } from '../utils/helpers';
+  getSavingThrow
+} from '../utils/helpers';
 import { mobs, mobWeightMap } from '../utils/mobs';
 
 class Level {
-  constructor(game, tileSet){
+  constructor(game, tileSet) {
     this.entityLocals = {};
     this.map = {};
     this.wall = {};
@@ -20,20 +21,20 @@ class Level {
     // used to keep track of where the exit is located
     this.exit = null;
   }
-  
-  init(){
+
+  init() {
     this._generateMap();
   }
 
-  _generateMap(){
+  _generateMap() {
     // Map comes from Rot.js and allows us to create dungeons
     const dungeon = new Map.Uniform();
     const freeCells = [];
 
     // this function is used to generate the walls of the dungeon
-    function dungeonTileCreator(x, y, value){
+    function dungeonTileCreator(x, y, value) {
       // value can be either 1 or 0
-      if (value){
+      if (value) {
         const key = [x, y].join();
         this.wall[key] = "";
         return;
@@ -58,7 +59,7 @@ class Level {
     this.game.addPlayer(this._createEntity(Player, freeCells));
 
 
-    for(let i = 0; i < 5; i++){
+    for (let i = 0; i < 5; i++) {
       const mob = mobs[RNG.getWeightedValue(mobWeightMap)];
       this.mobs.push(this._createEntity(Mob, freeCells, mob.stats));
     }
@@ -72,14 +73,15 @@ class Level {
       const [x, y] = numParse(key.split(","));
       this.game.display.draw(x, y, this.map[key]);
     }
-    for(const key in this.wall) {
+    for (const key in this.wall) {
       const [x, y] = numParse(key.split(","))
       this.game.display.draw(x, y, this.wall[key]);
     }
   }
 
-  _createEntity(Entity, freeCells, stats){
-    if (Entity.prototype === Player.prototype){
+  // TODO: Remove from level, add as class method
+  _createEntity(Entity, freeCells, stats) {
+    if (Entity.prototype === Player.prototype) {
       const [x, y] = numParse(freeCells.splice(0, 1)[0].split(','));
       this.player = new Entity(x, y, this.game);
       this.entityLocals[x + "," + y] = this.player;
@@ -94,7 +96,7 @@ class Level {
     };
   }
 
-  _createExit(freeCells){
+  _createExit(freeCells) {
     const lastSpace = freeCells.length - 1;
     const exitSpace = freeCells.splice(lastSpace, 1);
     const [x, y] = numParse(exitSpace[0].split(','));
@@ -103,15 +105,15 @@ class Level {
     this.game.display.draw(x, y, "∏");
   }
 
-  removeMob(mobToRemove){
+  removeMob(mobToRemove) {
     this.mobs = this.mobs.filter(mob => mob === mobToRemove);
   }
 
-  redraw(){
+  redraw() {
     this._generateWholeMap();
   }
 
-  fightRoundOfCombat(attacker, defender){
+  fightRoundOfCombat(attacker, defender) {
     const successfullyHit = rollD6() >= getRollToHit(attacker.weaponSkill, defender.weaponSkill);
 
     if (successfullyHit) {
@@ -132,7 +134,7 @@ class Level {
       };
     } else {
       console.log(attacker instanceof Player ? `You miss the ${defender.name}` : `The ${attacker.name} misses!`);
-      this.game.displayText(attacker instanceof Player ? `You miss the ${defender.name}` : `The ${attacker.name} misses!` );
+      this.game.displayText(attacker instanceof Player ? `You miss the ${defender.name}` : `The ${attacker.name} misses!`);
       return;
     };
   }
