@@ -14,18 +14,9 @@ class Mob extends Entity {
     armourSave: 7,
     wounds: 1,
   }) {
-<<<<<<< HEAD
-=======
     super(x, y, game, stats);
->>>>>>> entity--inheritance
 
     this.fov = null;
-<<<<<<< HEAD
-
-    // --- characteristics --- 
-    this._stats = stats;
-=======
->>>>>>> entity--inheritance
 
     switch (this._stats.alignment) {
       case "ally":
@@ -43,68 +34,14 @@ class Mob extends Entity {
   }
 
   /* Attribute GETTERS && SETTERS */
-<<<<<<< HEAD
-  get x() {
-    return this._x;
-  }
-
-  set x(arg) {
-    this._x = arg;
-  }
-
-  get y() {
-    return this._y;
-  }
-
-  set y(arg) {
-    this._y = arg;
-  }
-
-=======
->>>>>>> entity--inheritance
   get alignment() {
     return this._stats.alignment;
   }
 
-<<<<<<< HEAD
-  get char() {
-    return this._stats.char;
-  }
-
-  get name() {
-    return this._stats.name;
-  }
-
-  get weaponSkill() {
-    return this._stats.weaponSkill;
-  }
-
-  get strength() {
-    return this._stats.strength;
-  }
-
-  get toughness() {
-    return this._stats.toughness;
-  }
-
-  get armourSave() {
-    return this._stats.armourSave;
-  }
-
-  get wounds() {
-    return this._stats.wounds;
-  }
-
-  set wounds(amount) {
-    this._stats.wounds = amount;
-  }
-
-=======
   set alignment(newAlignment) {
     this._stats.alignment = newAlignment;
   }
 
->>>>>>> entity--inheritance
   /*  ACTIONS */
   _draw() {
     this._updateVisibility();
@@ -232,10 +169,6 @@ class Mob extends Entity {
   }
 
   _attack(entity) {
-<<<<<<< HEAD
-    console.log(`${this.name} attacks you!`)
-=======
->>>>>>> entity--inheritance
     this.game.displayText(`${this.name} attacks you!`);
     super.attack(entity);
   }
