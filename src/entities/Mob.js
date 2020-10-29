@@ -1,8 +1,9 @@
 import { Path, RNG, FOV } from 'rot-js';
-import { formatCoords } from '../utils/helpers';
+import { formatCoords, numParse } from '../utils/helpers';
+import Entity from './Entity';
 
 // TODO: this class is very similar to the Player class, maybe it should inherit from a parent
-class Mob {
+class Mob extends Entity {
   constructor(x, y, game, stats = {
     name: "unkown",
     alignment: "neutral",
@@ -13,14 +14,18 @@ class Mob {
     armourSave: 7,
     wounds: 1,
   }) {
+<<<<<<< HEAD
+=======
+    super(x, y, game, stats);
+>>>>>>> entity--inheritance
 
-    this._x = x;
-    this._y = y;
-    this.game = game;
     this.fov = null;
+<<<<<<< HEAD
 
     // --- characteristics --- 
     this._stats = stats;
+=======
+>>>>>>> entity--inheritance
 
     switch (this._stats.alignment) {
       case "ally":
@@ -38,6 +43,7 @@ class Mob {
   }
 
   /* Attribute GETTERS && SETTERS */
+<<<<<<< HEAD
   get x() {
     return this._x;
   }
@@ -54,10 +60,13 @@ class Mob {
     this._y = arg;
   }
 
+=======
+>>>>>>> entity--inheritance
   get alignment() {
     return this._stats.alignment;
   }
 
+<<<<<<< HEAD
   get char() {
     return this._stats.char;
   }
@@ -90,10 +99,16 @@ class Mob {
     this._stats.wounds = amount;
   }
 
+=======
+  set alignment(newAlignment) {
+    this._stats.alignment = newAlignment;
+  }
+
+>>>>>>> entity--inheritance
   /*  ACTIONS */
   _draw() {
     this._updateVisibility();
-    this.game.display.draw(this.x, this.y, this.char, this.color);
+    super.draw();
     return new Promise(result => result, reject => reject);
   }
 
@@ -187,6 +202,7 @@ class Mob {
     // the mobs current position is also in the path 
     // so we remove the first coordinates 
     path.shift();
+
     if (path.length == 1) {
       this._draw();
       this._attack(this.game.currentLevel.entityLocals[path[0].join()])
@@ -216,9 +232,12 @@ class Mob {
   }
 
   _attack(entity) {
+<<<<<<< HEAD
     console.log(`${this.name} attacks you!`)
+=======
+>>>>>>> entity--inheritance
     this.game.displayText(`${this.name} attacks you!`);
-    this.game.currentLevel.fightRoundOfCombat(this, entity);
+    super.attack(entity);
   }
 
   takeDamage(amount) {
@@ -247,6 +266,14 @@ class Mob {
   _checkIfInMap(x, y) {
     return (formatCoords(x, y) in this.game.currentLevel.map);
   }
-};
+
+  static create(game, freeCells, stats) {
+    const index = Math.floor(RNG.getUniform() * freeCells.length);
+    // we use splice so that the space is now considered occupied
+    const [x, y] = numParse(freeCells.splice(index, 1)[0].split(','));
+    const mob = new Mob(x, y, game, stats);
+    return mob;
+  }
+}
 
 export default Mob;

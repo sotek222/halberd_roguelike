@@ -1,9 +1,9 @@
 import { DIRS, FOV } from 'rot-js';
 import Mob from './Mob';
-import { formatCoords } from '../utils/helpers';
+import { formatCoords, numParse } from '../utils/helpers';
+import Entity from './Entity';
 
-// TODO: this class is very similar to the Mob class, maybe it should inherit from a parent
-class Player {
+class Player extends Entity {
   constructor(x, y, game, stats = {
     char: "☺︎",
     wounds: 4,
@@ -11,11 +11,8 @@ class Player {
     strength: 3,
     toughness: 3,
     armourSave: 5
-  }){
-    this._x = x; 
-    this._y = y;
-    this.game = game;
-    this._stats = stats;
+  }) {
+    super(x, y, game, stats);
 
     this.keyMap = {
       '38': 0,
@@ -27,71 +24,26 @@ class Player {
       '37': 6,
       '36': 7,
     };
-
+    this.color = "#0f0";
     this._draw();
   }
 
-  get x(){
-    return this._x;
-  }
-
-  set x(arg){
-    this._x = arg;
-  }
-
-  get y(){
-    return this._y;
-  }
-  
-  set y(arg){
-    this._y = arg;
-  }
-
-  get char(){
-    return this._stats.char;
-  }
-
-  get wounds(){
-    return this._stats.wounds;
-  }
-
-  set wounds(amount){
-    this._stats.wounds = amount;
-  }
-
-  get weaponSkill(){
-    return this._stats.weaponSkill;
-  }
-
-  get armourSave(){
-    return this._stats.armourSave;
-  }
-
-  get strength(){
-    return this._stats.strength;
-  }
-
-  get toughness(){
-    return this._stats.toughness;
-  }
-
-  _draw(){
+  _draw() {
     this._updateVisibility();
-    this.game.display.draw(this.x, this.y, this.char, "#0f0");
+    super.draw();
   }
-  
+
   act() {
     this.game.engine.lock();
     this.ref = this.handleEvent.bind(this);
     window.addEventListener('keydown', this.ref);
   }
-  
-  _attack(entity){
-    console.log(`you attack the ${entity.name}`);
+
+  _attack(entity) {
     this.game.displayText(`you attack the ${entity.name}`);
-    this.game.currentLevel.fightRoundOfCombat(this, entity);
+    super.attack(entity);
   }
-  
+
   takeDamage(amount) {
     console.log(`You take ${amount} wound! total Left: `, this.wounds);
     this.game.displayText(`You take ${amount} wound!`);
@@ -102,17 +54,17 @@ class Player {
       this.game.engine.lock();
     };
   }
-  
+
   handleEvent(e) {
     if (!(e.keyCode in this.keyMap)) return;
     e.preventDefault();
-    
+
     const dir = DIRS[8][this.keyMap[e.keyCode]];
     const newX = this._x + dir[0];
     const newY = this._y + dir[1];
     const newLocation = formatCoords(newX, newY);
     if (!(newLocation in this.game.currentLevel.map)) return;
-    if (newLocation in this.game.currentLevel.entityLocals && this.game.currentLevel.entityLocals[newLocation] instanceof Mob){
+    if (newLocation in this.game.currentLevel.entityLocals && this.game.currentLevel.entityLocals[newLocation] instanceof Mob) {
       this._attack(this.game.currentLevel.entityLocals[newLocation]);
       window.removeEventListener("keydown", this.ref)
       this.game.engine.unlock();
@@ -130,7 +82,7 @@ class Player {
     this.game.engine.unlock();
   }
 
-  _updateVisibility(){
+  _updateVisibility() {
     this.game.currentLevel.redraw();
     // returns true if light is able to pass through 
     function lightPasses(x, y) {
@@ -157,6 +109,11 @@ class Player {
       const color = (mapChar ? "#660" : "");
       this.game.display.draw(x, y, char, "#fff", color);
     }.bind(this));
+  }
+
+  static create(game, freeCells) {
+    const [x, y] = numParse(freeCells.splice(0, 1)[0].split(','));
+    return new Player(x, y, game);
   }
 
 };
