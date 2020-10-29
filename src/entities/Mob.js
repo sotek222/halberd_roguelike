@@ -12,13 +12,13 @@ class Mob {
     toughness: 2,
     armourSave: 7,
     wounds: 1,
-  }){
+  }) {
 
     this._x = x;
     this._y = y;
     this.game = game;
     this.fov = null;
-    
+
     // --- characteristics --- 
     this._stats = stats;
 
@@ -54,53 +54,53 @@ class Mob {
     this._y = arg;
   }
 
-  get alignment(){
+  get alignment() {
     return this._stats.alignment;
   }
 
-  get char(){
+  get char() {
     return this._stats.char;
   }
 
-  get name(){
+  get name() {
     return this._stats.name;
   }
 
-  get weaponSkill(){
+  get weaponSkill() {
     return this._stats.weaponSkill;
   }
 
-  get strength(){
+  get strength() {
     return this._stats.strength;
   }
 
-  get toughness(){
+  get toughness() {
     return this._stats.toughness;
   }
 
-  get armourSave(){
+  get armourSave() {
     return this._stats.armourSave;
   }
 
-  get wounds(){
+  get wounds() {
     return this._stats.wounds;
   }
 
-  set wounds(amount){
+  set wounds(amount) {
     this._stats.wounds = amount;
   }
 
-  /*  ACTIONS */ 
+  /*  ACTIONS */
   _draw() {
     this._updateVisibility();
     this.game.display.draw(this.x, this.y, this.char, this.color);
     return new Promise(result => result, reject => reject);
   }
 
-  act(){
+  act() {
     switch (this.alignment) {
       case "enemy":
-        if(this._playerIsInFOV()) {
+        if (this._playerIsInFOV()) {
           this._moveTowardsPlayer();
         } else {
           this._draw();
@@ -124,29 +124,29 @@ class Mob {
     // output callback 
     fov.compute(this.x, this.y, 5, function (x, y, r, visibility) {
       if (r) {
-        sight[x + "," + y] = true; 
+        sight[x + "," + y] = true;
       };
     }.bind(this));
 
     this.fov = sight;
   }
 
-  _wander(){
+  _wander() {
     const radius = [
       // top left corner
       formatCoords(this.x - 1, this.y - 1),
       // top middle 
       formatCoords(this.x, this.y - 1),
       // top right corner
-      formatCoords(this.x + 1,this.y - 1),
+      formatCoords(this.x + 1, this.y - 1),
       // mid left
       formatCoords(this.x - 1, this.y),
       // center
       formatCoords(this.x, this.y),
       // mid right
-      formatCoords(this.x + 1, this.y), 
+      formatCoords(this.x + 1, this.y),
       // bottom left corner
-      formatCoords(this.x - 1,this.y + 1),
+      formatCoords(this.x - 1, this.y + 1),
       // bottom middle
       formatCoords(this.x, this.y + 1),
       // bottom right corner
@@ -156,33 +156,33 @@ class Mob {
     const randomPos = radius[Math.floor(RNG.getUniform() * radius.length)];
     const [newX, newY] = randomPos.split(",");
 
-    if(this._checkIfInMap(newX, newY)){
+    if (this._checkIfInMap(newX, newY)) {
       this.game.display.draw(this.x, this.y, this.game.currentLevel.map[formatCoords(this.x, this.y)]);
       delete this.game.currentLevel.entityLocals[formatCoords(this.x, this.y)];
       this.x = parseInt(newX);
       this.y = parseInt(newY);
-      this.game.currentLevel.entityLocals[formatCoords(this.x , this.y)] = this;
+      this.game.currentLevel.entityLocals[formatCoords(this.x, this.y)] = this;
       this._draw();
     } else {
       this._wander();
     };
 
   }
-  
-  _moveTowardsPlayer(){
+
+  _moveTowardsPlayer() {
     // Get the players current coords
     let x = this.game.player.x;
     let y = this.game.player.y;
-    
+
     // Path generating algorithm
     const astar = new Path.AStar(x, y, this._checkIfInMap.bind(this), { topology: 4 });
     const path = [];
-    
+
     function addToPath(x, y) {
       path.push([x, y]);
     };
-    
-    
+
+
     astar.compute(this.x, this.y, addToPath);
     // the mobs current position is also in the path 
     // so we remove the first coordinates 
@@ -199,10 +199,10 @@ class Mob {
         this._draw();
         return;
       };
-      
+
       // replace the current area with the tile 
       this.game.display.draw(this.x, this.y, this.game.currentLevel.map[formatCoords(this.x, this.y)]);
-      
+
       // remove the entity from its current position
       delete this.game.currentLevel.entityLocals[formatCoords(this.x, this.y)];
       // update the x and y of the entity
@@ -214,33 +214,33 @@ class Mob {
       this._draw();
     };
   }
-  
-  _attack(entity) { 
+
+  _attack(entity) {
     console.log(`${this.name} attacks you!`)
     this.game.displayText(`${this.name} attacks you!`);
     this.game.currentLevel.fightRoundOfCombat(this, entity);
   }
 
-  takeDamage(amount){
+  takeDamage(amount) {
     console.log(`The ${this.name} takes ${amount} wound!`)
     this.game.displayText(`The ${this.name} takes ${amount} wound!`);
     this.wounds = this.wounds - amount;
-    if(this.wounds <= 0){
+    if (this.wounds <= 0) {
       this.game.displayText(`The ${this.name} is slain!`);
       this._remove();
     };
   }
-  
+
   /* HELPERS */
-  
-  _remove(){
+
+  _remove() {
     this.game.scheduler.remove(this);
     this.game.display.draw(this.x, this.y, this.game.currentLevel.map[formatCoords(this.x, this.y)]);
     delete this.game.currentLevel.entityLocals[formatCoords(this.x, this.y)];
     this.game.currentLevel.removeMob(this);
   }
 
-  _playerIsInFOV(){
+  _playerIsInFOV() {
     return formatCoords(this.game.player.x, this.game.player.y) in this.fov;
   }
 
