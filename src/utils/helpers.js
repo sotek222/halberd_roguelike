@@ -65,5 +65,5 @@ export {
   rollD6,
   getRollToHit,
   getRollToWound,
-  getSavingThrow
+  getSavingThrow,
 };

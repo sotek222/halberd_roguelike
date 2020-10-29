@@ -66,7 +66,6 @@ class Level {
       const mob = mobs[RNG.getWeightedValue(mobWeightMap)];
       const createdMob = Mob.create(this.game, freeCells, mob.stats);
       this.entityLocals[formatCoords(createdMob.x, createdMob.y)] = createdMob;
-      console.log(createdMob);
       this.mobs.push(createdMob);
     }
 
@@ -103,6 +102,9 @@ class Level {
   }
 
   fightRoundOfCombat(attacker, defender) {
+    let playerAttacking = false;
+    if (attacker instanceof Player) playerAttacking = true;
+
     const successfullyHit = rollD6() >= getRollToHit(attacker.weaponSkill, defender.weaponSkill);
 
     if (successfullyHit) {
@@ -111,23 +113,20 @@ class Level {
       if (successfullyWounded) {
         const madeSave = rollD6() >= getSavingThrow(attacker.strength, defender.armourSave);
         if (madeSave) {
-          console.log(attacker instanceof Player ? `Your attack bounces off the ${defender.name}'s armour` : `The ${attacker.name}'s attack bounces off your armour!`);
-          this.game.displayText(attacker instanceof Player ? `Your attack bounces off the ${defender.name}'s armour` : `The ${attacker.name}'s attack bounces off your armour!`);
+          this.game.displayText(playerAttacking ? `Your attack bounces off the ${defender.name}'s armour` : `The ${attacker.name}'s attack bounces off your armour!`, "yellow");
           return;
         } else {
           defender.takeDamage(1);
         };
       } else {
-        console.log("failed to wound")
+        this.game.displayText("failed to wound")
         return;
       };
     } else {
-      console.log(attacker instanceof Player ? `You miss the ${defender.name}` : `The ${attacker.name} misses!`);
-      this.game.displayText(attacker instanceof Player ? `You miss the ${defender.name}` : `The ${attacker.name} misses!`);
+      this.game.displayText(playerAttacking ? `You miss the ${defender.name}` : `The ${attacker.name} misses!`, "yellow");
       return;
     };
   }
-
 };
 
 export default Level;

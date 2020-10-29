@@ -40,17 +40,16 @@ class Player extends Entity {
   }
 
   _attack(entity) {
-    this.game.displayText(`you attack the ${entity.name}`);
+    this.game.displayText(`you attack the ${entity.name}`, "green");
     super.attack(entity);
   }
 
   takeDamage(amount) {
-    console.log(`You take ${amount} wound! total Left: `, this.wounds);
-    this.game.displayText(`You take ${amount} wound!`);
+    this.game.displayText(`You take ${amount} wound!`, "red");
     this.wounds = this.wounds - amount;
+    this.game.displayStats(this.stats);
     if (this.wounds <= 0) {
-      console.log(`You are slain! Game Over :(`, this.wounds);
-      this.game.displayText(`You are slain! Game Over :(`);
+      this.game.displayText(`You are slain! Game Over :(`, "darkred");
       this.game.engine.lock();
     };
   }

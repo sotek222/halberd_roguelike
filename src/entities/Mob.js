@@ -169,16 +169,15 @@ class Mob extends Entity {
   }
 
   _attack(entity) {
-    this.game.displayText(`${this.name} attacks you!`);
+    this.game.displayText(`${this.name} attacks you!`, this.color);
     super.attack(entity);
   }
 
   takeDamage(amount) {
-    console.log(`The ${this.name} takes ${amount} wound!`)
-    this.game.displayText(`The ${this.name} takes ${amount} wound!`);
+    this.game.displayText(`The ${this.name} takes ${amount} wound!`, this.color);
     this.wounds = this.wounds - amount;
     if (this.wounds <= 0) {
-      this.game.displayText(`The ${this.name} is slain!`);
+      this.game.displayText(`The ${this.name} is slain!`, "lightgreen");
       this._remove();
     };
   }

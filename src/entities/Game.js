@@ -1,4 +1,5 @@
 import { Scheduler, Engine, Display } from 'rot-js';
+import { displayStats, displayText } from '../utils/textDisplay';
 import Level from './Level';
 
 class Game {
@@ -37,16 +38,16 @@ class Game {
   }
 
   addPlayer(player) {
-    this.player = player
+    this.player = player;
+    this.displayStats(this.player.stats);
   }
 
   displayText(text, color = "white") {
-    const textContainer = document.querySelector(".text-container");
-    textContainer.insertAdjacentHTML('beforeend', `
-      <p class="text" style="color: ${color}">${text}</p>
-    `);
+    displayText(text, color);
+  }
 
-    textContainer.scrollTop = textContainer.scrollHeight;
+  displayStats(stats) {
+    displayStats(stats);
   }
 };
 

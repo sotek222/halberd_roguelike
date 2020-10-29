@@ -18,6 +18,7 @@ body {
 #game-container {
   width: 1200px;
   height: 375px;
+  border: 1px solid white;
 }
 
 .game-title {
@@ -29,14 +30,36 @@ body {
 }
 
 .text-container,
-.stats {
+.stats-container {
   background-color: black;
   width: 600px;
-  height: 100px;
+  height: 200px;
   border: 1px solid gray;
   overflow: scroll;
 }
 
+.text-container::-webkit-scrollbar {
+  display: none;
+}
+
 .text {
   margin: 5px 0 0 5px;
+}
+
+.stats-container {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+}
+
+.stats-container > :first-child {
+  margin-top: 5px;
+}
+
+.stats-container> :last-child {
+  margin-bottom: 5px;
+}
+
+.stat {
+  color: white;
 }

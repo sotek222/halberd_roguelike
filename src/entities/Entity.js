@@ -34,6 +34,10 @@ class Entity {
     this._y = arg;
   }
 
+  get stats() {
+    return this._stats;
+  }
+
   get name() {
     return this._stats.name;
   }
@@ -76,6 +80,7 @@ class Entity {
 
   attack(entity) {
     this.game.currentLevel.fightRoundOfCombat(this, entity);
+    this.game.displayText("+".repeat(10));
   }
 };
 
