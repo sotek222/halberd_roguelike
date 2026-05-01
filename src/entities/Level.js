@@ -7,7 +7,7 @@ import {
   getRollToHit,
   getRollToWound,
   getSavingThrow,
-  formatCoords
+  formatCoords,
 } from '../utils/helpers';
 import { mobs, mobWeightMap } from '../utils/mobs';
 
@@ -36,31 +36,30 @@ class Level {
     function dungeonTileCreator(x, y, value) {
       // value can be either 1 or 0
       if (value) {
-        this.wall[formatCoords(x, y)] = "";
+        this.wall[formatCoords(x, y)] = '';
         return;
       }
 
       const key = formatCoords(x, y);
-      // we push this key into freeCells so we know which spaces 
+      // we push this key into freeCells so we know which spaces
       // are part of the dungeon
       freeCells.push(key);
-      this.map[key] = "⧈";
-    };
+      this.map[key] = '⧈';
+    }
 
     // the dungeon is an instance of Map.Uniform
     // the create method must take a callback
     // the callback is passed every x and y coordinate in the map
-    // and a value. This is used to generate and store the values for 
+    // and a value. This is used to generate and store the values for
     // the dungeon in our map and walls.
     dungeon.create(dungeonTileCreator.bind(this));
     // this method is used to actually render the map in the canvas
     this._generateWholeMap();
     // add the player to the level and the game as a whole
     const player = Player.create(this.game, freeCells);
-    this.player = player
+    this.player = player;
     this.entityLocals[formatCoords(this.player.x, this.player.y)] = this.player;
     this.game.addPlayer(player);
-
 
     for (let i = 0; i < 5; i++) {
       const mob = mobs[RNG.getWeightedValue(mobWeightMap)];
@@ -71,15 +70,16 @@ class Level {
 
     // add the exit to the end of the map
     this._createExit(freeCells);
+    // TODO: when the player enters the exit tile, generate the next floor (or win screen) — multi-level progression
   }
 
   _generateWholeMap() {
     for (const key in this.map) {
-      const [x, y] = numParse(key.split(","));
+      const [x, y] = numParse(key.split(','));
       this.game.display.draw(x, y, this.map[key]);
     }
     for (const key in this.wall) {
-      const [x, y] = numParse(key.split(","))
+      const [x, y] = numParse(key.split(','));
       this.game.display.draw(x, y, this.wall[key]);
     }
   }
@@ -88,13 +88,13 @@ class Level {
     const lastSpace = freeCells.length - 1;
     const exitSpace = freeCells.splice(lastSpace, 1);
     const [x, y] = numParse(exitSpace[0].split(','));
-    this.map[x + "," + y] = "∏";
+    this.map[x + ',' + y] = '∏';
     this.exit = exitSpace;
-    this.game.display.draw(x, y, "∏");
+    this.game.display.draw(x, y, '∏');
   }
 
   removeMob(mobToRemove) {
-    this.mobs = this.mobs.filter(mob => mob === mobToRemove);
+    this.mobs = this.mobs.filter((mob) => mob === mobToRemove);
   }
 
   redraw() {
@@ -105,28 +105,41 @@ class Level {
     let playerAttacking = false;
     if (attacker instanceof Player) playerAttacking = true;
 
-    const successfullyHit = rollD6() >= getRollToHit(attacker.weaponSkill, defender.weaponSkill);
+    const successfullyHit =
+      rollD6() >= getRollToHit(attacker.weaponSkill, defender.weaponSkill);
 
     if (successfullyHit) {
-      const successfullyWounded = rollD6() >= getRollToWound(attacker.strength, defender.toughness);
+      const successfullyWounded =
+        rollD6() >= getRollToWound(attacker.strength, defender.toughness);
 
       if (successfullyWounded) {
-        const madeSave = rollD6() >= getSavingThrow(attacker.strength, defender.armourSave);
+        const madeSave =
+          rollD6() >= getSavingThrow(attacker.strength, defender.armourSave);
         if (madeSave) {
-          this.game.displayText(playerAttacking ? `Your attack bounces off the ${defender.name}'s armour` : `The ${attacker.name}'s attack bounces off your armour!`, "yellow");
+          this.game.displayText(
+            playerAttacking
+              ? `Your attack bounces off the ${defender.name}'s armour`
+              : `The ${attacker.name}'s attack bounces off your armour!`,
+            'yellow',
+          );
           return;
         } else {
           defender.takeDamage(1);
-        };
+        }
       } else {
-        this.game.displayText("failed to wound")
+        this.game.displayText('failed to wound');
         return;
-      };
+      }
     } else {
-      this.game.displayText(playerAttacking ? `You miss the ${defender.name}` : `The ${attacker.name} misses!`, "yellow");
+      this.game.displayText(
+        playerAttacking
+          ? `You miss the ${defender.name}`
+          : `The ${attacker.name} misses!`,
+        'yellow',
+      );
       return;
-    };
+    }
   }
-};
+}
 
 export default Level;
