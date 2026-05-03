@@ -88,7 +88,11 @@ class Mob extends Entity {
 
   _draw() {
     this._updateVisibility();
-    super.draw();
+
+    const playerFov = this.game.player.visible;
+
+    if (formatCoords(this.x, this.y) in playerFov) super.draw();
+
     return new Promise(
       (result) => result,
       (reject) => reject,
@@ -199,11 +203,11 @@ class Mob extends Entity {
     const [newX, newY] = randomPos.split(',');
 
     if (this._checkIfInMap(newX, newY)) {
-      this.game.display.draw(
-        this.x,
-        this.y,
-        this.game.currentLevel.map[formatCoords(this.x, this.y)],
-      );
+      // this.game.display.draw(
+      //   this.x,
+      //   this.y,
+      //   this.game.currentLevel.map[formatCoords(this.x, this.y)],
+      // );
       delete this.game.currentLevel.entityLocals[formatCoords(this.x, this.y)];
       this.x = parseInt(newX);
       this.y = parseInt(newY);

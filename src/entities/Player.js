@@ -47,6 +47,8 @@ class Player extends Entity {
     };
 
     this._draw();
+
+    this.visible = {};
   }
 
   // =====================
@@ -232,6 +234,7 @@ class Player extends Entity {
 
     // draw player LAST so it’s always visible
     this.game.display.draw(this.x, this.y, this.char, '#fff');
+    this.visible = visible;
   }
 
   // =====================
