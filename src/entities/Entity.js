@@ -1,23 +1,42 @@
-class Entity {
-  constructor(x, y, game, stats = {
-    name: "unkown",
-    alignment: "neutral",
-    char: "⚉",
-    weaponSkill: 2,
-    strength: 2,
-    toughness: 2,
-    armourSave: 7,
-    wounds: 1,
-  }) {
+import { ALIGNMENT, ALIGNMENT_COLOR_MAP, ENTITY_NAME } from '../constants';
+import Player from './Player';
 
+class Entity {
+  constructor(
+    x,
+    y,
+    game,
+    stats = {
+      name: 'unknown',
+      alignment: ALIGNMENT.NEUTRAL,
+      char: '⚉',
+      weaponSkill: 2,
+      strength: 2,
+      toughness: 2,
+      armourSave: 7,
+      wounds: 1,
+    },
+  ) {
     this._x = x;
     this._y = y;
 
     this.game = game;
     this._stats = stats;
 
+    this.color = this.getEntityColor(this);
   }
 
+  /**  =====+++++ ATTRIBUTES +++++=====
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   */
   get x() {
     return this._x;
   }
@@ -34,12 +53,20 @@ class Entity {
     this._y = arg;
   }
 
+  get alignment() {
+    return this._stats.alignment;
+  }
+
+  set alignment(newAlignment) {
+    this._stats.alignment = newAlignment;
+  }
+
   get stats() {
     return this._stats;
   }
 
   get name() {
-    return this._stats.name;
+    return this.isPlayer() ? 'you' : this._stats.name;
   }
 
   set name(newName) {
@@ -74,14 +101,78 @@ class Entity {
     return this._stats.toughness;
   }
 
+  /** ====+++++ ACTIONS +++++=====
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   */
   draw() {
     this.game.display.draw(this.x, this.y, this.char, this.color);
   }
 
   attack(entity) {
+    const isPlayer = this.isPlayer();
+
+    const attackText = isPlayer
+      ? `You attack the ${entity.name}!`
+      : `The ${this.name} attacks you!`;
+
+    this.game.displayText(attackText, 'green');
     this.game.currentLevel.fightRoundOfCombat(this, entity);
-    this.game.displayText("+".repeat(10));
+    this.game.displayText('+'.repeat(10));
   }
-};
+
+  takeDamage(amount) {
+    const isPlayer = this.isPlayer();
+
+    const damageText = isPlayer
+      ? `You take ${amount} wound${amount > 1 ? 's' : ''}!`
+      : `The ${this.name} takes ${amount} wound${amount > 1 ? 's' : ''}!`;
+
+    this.game.displayText(damageText, isPlayer ? 'red' : this.color);
+    this.wounds = this.wounds - amount;
+
+    if (this.wounds <= 0) {
+      const deathText = isPlayer
+        ? `You are slain! Game Over :(`
+        : `The ${this.name} is slain!`;
+
+      this.game.displayText(deathText, isPlayer ? 'darkred' : 'lightgreen');
+      if (isPlayer) {
+        this.game.engine.lock();
+      } else {
+        this._remove();
+      }
+    }
+  }
+
+  /** ====+++++ HELPERS +++++=====
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   */
+  getEntityColor(entity) {
+    return ALIGNMENT_COLOR_MAP[entity.alignment] || '#fff';
+  }
+
+  isPlayer() {
+    return this._stats.name === ENTITY_NAME.PLAYER;
+  }
+}
 
 export default Entity;

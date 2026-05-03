@@ -1,8 +1,10 @@
 import { Path, RNG, FOV } from 'rot-js';
 import { formatCoords, numParse } from '../utils/helpers';
 import Entity from './Entity';
+import { ALIGNMENT, BEHAVIORS } from '../constants';
+const { wander, wait, guard } = BEHAVIORS;
 
-// TODO: share behaviour with Player via a common actor base (movement, combat hooks) instead of duplicating patterns
+// TODO: share behavior with Player via a common actor base (movement, combat hooks) instead of duplicating patterns
 class Mob extends Entity {
   constructor(
     x,
@@ -10,7 +12,7 @@ class Mob extends Entity {
     game,
     stats = {
       name: 'unkown',
-      alignment: 'neutral',
+      alignment: ALIGNMENT.NEUTRAL,
       char: '⚉',
       weaponSkill: 2,
       strength: 2,
@@ -18,33 +20,17 @@ class Mob extends Entity {
       armourSave: 7,
       wounds: 1,
     },
+    behaviors = [],
   ) {
     super(x, y, game, stats);
 
     this.fov = null;
 
-    switch (this._stats.alignment) {
-      case 'ally':
-        this.color = '#0ff';
-        break;
-      case 'enemy':
-        this.color = '#f00';
-        break;
-      default:
-        this.color = '#ff0';
-        break;
-    }
+    console.log({ stats, behaviors });
+
+    this.behaviors = behaviors;
 
     this._draw();
-  }
-
-  /* Attribute GETTERS && SETTERS */
-  get alignment() {
-    return this._stats.alignment;
-  }
-
-  set alignment(newAlignment) {
-    this._stats.alignment = newAlignment;
   }
 
   /*  ACTIONS */
@@ -59,11 +45,14 @@ class Mob extends Entity {
 
   act() {
     switch (this.alignment) {
-      case 'enemy':
+      case ALIGNMENT.ENEMY:
         if (this._playerIsInFOV()) {
           this._moveTowardsPlayer();
         } else {
-          this._draw();
+          const weightedBehavior = this._getWeightedRandomBehavior();
+
+          const action = this._mapBehaviorToFunction(weightedBehavior);
+          action();
         }
         break;
       default:
@@ -159,12 +148,14 @@ class Mob extends Entity {
 
     if (path.length == 1) {
       this._draw();
-      this._attack(this.game.currentLevel.entityLocals[path[0].join()]);
+
+      const player = this.game.currentLevel.entityLocals[path[0].join()];
+      this.attack(player);
     } else {
       x = path[0][0];
       y = path[0][1];
-      // If there is another entity in the direction its moving
-      // dont let it move forward
+      // If there is another entity in the direction it's moving
+      // don't let it move forward
       if (formatCoords(x, y) in this.game.currentLevel.entityLocals) {
         this._draw();
         return;
@@ -189,23 +180,6 @@ class Mob extends Entity {
     }
   }
 
-  _attack(entity) {
-    this.game.displayText(`${this.name} attacks you!`, this.color);
-    super.attack(entity);
-  }
-
-  takeDamage(amount) {
-    this.game.displayText(
-      `The ${this.name} takes ${amount} wound!`,
-      this.color,
-    );
-    this.wounds = this.wounds - amount;
-    if (this.wounds <= 0) {
-      this.game.displayText(`The ${this.name} is slain!`, 'lightgreen');
-      this._remove();
-    }
-  }
-
   /* HELPERS */
 
   _remove() {
@@ -227,11 +201,50 @@ class Mob extends Entity {
     return formatCoords(x, y) in this.game.currentLevel.map;
   }
 
-  static create(game, freeCells, stats) {
+  _mapBehaviorToFunction(behavior) {
+    console.log(this.name, behavior.name);
+
+    switch (behavior.name) {
+      case wander:
+        return this._wander.bind(this);
+      case guard:
+        return this._draw.bind(this);
+      case wait:
+        return this._draw.bind(this);
+      default:
+        return this._draw.bind(this);
+    }
+  }
+
+  _getWeightedRandomBehavior() {
+    const behaviors = this.behaviors;
+
+    let totalWeight = 0;
+
+    for (const b of behaviors) {
+      totalWeight += b.weight;
+    }
+
+    console.log({ behaviors, name: this.name });
+    let r = RNG.getUniform() * totalWeight;
+    let behavior = behaviors[0].name;
+
+    for (const b of behaviors) {
+      // The higher the weight the more likely it will survive the random check
+      if (r < b.weight) {
+        behavior = b;
+        break;
+      }
+      r -= b.weight;
+    }
+
+    return behavior;
+  }
+  static create(game, freeCells, stats, behaviors) {
     const index = Math.floor(RNG.getUniform() * freeCells.length);
     // we use splice so that the space is now considered occupied
     const [x, y] = numParse(freeCells.splice(index, 1)[0].split(','));
-    const mob = new Mob(x, y, game, stats);
+    const mob = new Mob(x, y, game, stats, behaviors);
     return mob;
   }
 }

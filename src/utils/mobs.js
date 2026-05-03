@@ -1,11 +1,25 @@
 // TODO: floor-based spawn tables, rare variants, and bosses on set depths
 
+import { ALIGNMENT, BEHAVIORS } from '../constants';
+
+const { wander, guard, wait } = BEHAVIORS;
+
 const mobs = {
   rat: {
     weight: 8,
+    behaviors: [
+      {
+        name: wander,
+        weight: 0.7,
+      },
+      {
+        name: wait,
+        weight: 0.3,
+      },
+    ],
     stats: {
       name: 'rat',
-      alignment: 'neutral',
+      alignment: ALIGNMENT.NEUTRAL,
       char: 'r',
       weaponSkill: 2,
       strength: 1,
@@ -16,9 +30,19 @@ const mobs = {
   },
   goblin: {
     weight: 6,
+    behaviors: [
+      {
+        name: wander,
+        weight: 0.5,
+      },
+      {
+        name: wait,
+        weight: 0.6,
+      },
+    ],
     stats: {
       name: 'goblin',
-      alignment: 'enemy',
+      alignment: ALIGNMENT.ENEMY,
       char: 'g',
       weaponSkill: 2,
       strength: 2,
@@ -29,9 +53,19 @@ const mobs = {
   },
   orc: {
     weight: 4,
+    behaviors: [
+      {
+        name: wander,
+        weight: 0.7,
+      },
+      {
+        name: wait,
+        weight: 0.3,
+      },
+    ],
     stats: {
       name: 'orc',
-      alignment: 'enemy',
+      alignment: ALIGNMENT.ENEMY,
       char: 'o',
       weaponSkill: 3,
       strength: 3,
@@ -42,10 +76,20 @@ const mobs = {
   },
   ogre: {
     weight: 2,
+    behaviors: [
+      {
+        name: wander,
+        weight: 0.7,
+      },
+      {
+        name: wait,
+        weight: 0.3,
+      },
+    ],
     stats: {
       name: 'ogre',
       char: 'O',
-      alignment: 'enemy',
+      alignment: ALIGNMENT.ENEMY,
       weaponSkill: 3,
       strength: 4,
       toughness: 5,
@@ -55,9 +99,19 @@ const mobs = {
   },
   guard: {
     weight: 5,
+    behaviors: [
+      {
+        name: guard,
+        weight: 0.9,
+      },
+      {
+        name: wander,
+        weight: 0.1,
+      },
+    ],
     stats: {
       name: 'prison guard',
-      alignment: 'enemy',
+      alignment: ALIGNMENT.ENEMY,
       char: 'u',
       weaponSkill: 3,
       strength: 3,
@@ -68,9 +122,19 @@ const mobs = {
   },
   prisoner: {
     weight: 6,
+    behaviors: [
+      {
+        name: wander,
+        weight: 0.9,
+      },
+      {
+        name: wait,
+        weight: 0.1,
+      },
+    ],
     stats: {
       name: 'human prisoner',
-      alignment: 'neutral',
+      alignment: ALIGNMENT.NEUTRAL,
       char: 'p',
       weaponSkill: 2,
       strength: 2,
@@ -81,9 +145,23 @@ const mobs = {
   },
   guardDog: {
     weight: 7,
+    behaviors: [
+      {
+        name: wander,
+        weight: 0.8,
+      },
+      {
+        name: guard,
+        weight: 0.1,
+      },
+      {
+        name: wait,
+        weight: 0.1,
+      },
+    ],
     stats: {
       name: 'guard dog',
-      alignment: 'enemy',
+      alignment: ALIGNMENT.ENEMY,
       char: 'd',
       weaponSkill: 3,
       strength: 3,

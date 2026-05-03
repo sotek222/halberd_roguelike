@@ -63,7 +63,12 @@ class Level {
 
     for (let i = 0; i < 5; i++) {
       const mob = mobs[RNG.getWeightedValue(mobWeightMap)];
-      const createdMob = Mob.create(this.game, freeCells, mob.stats);
+      const createdMob = Mob.create(
+        this.game,
+        freeCells,
+        mob.stats,
+        mob.behaviors,
+      );
       this.entityLocals[formatCoords(createdMob.x, createdMob.y)] = createdMob;
       this.mobs.push(createdMob);
     }

@@ -2,6 +2,7 @@ import { DIRS, FOV } from 'rot-js';
 import Mob from './Mob';
 import { formatCoords, numParse } from '../utils/helpers';
 import Entity from './Entity';
+import { ALIGNMENT, ENTITY_NAME } from '../constants';
 
 class Player extends Entity {
   constructor(
@@ -9,6 +10,8 @@ class Player extends Entity {
     y,
     game,
     stats = {
+      name: ENTITY_NAME.PLAYER,
+      alignment: ALIGNMENT.PLAYER,
       char: '☺︎',
       wounds: 4,
       weaponSkill: 3,
@@ -29,7 +32,7 @@ class Player extends Entity {
       37: 6,
       36: 7,
     };
-    this.color = '#0f0';
+
     this._draw();
   }
 
@@ -44,21 +47,9 @@ class Player extends Entity {
     window.addEventListener('keydown', this.ref);
   }
 
-  _attack(entity) {
-    this.game.displayText(`you attack the ${entity.name}`, 'green');
-    super.attack(entity);
-  }
-
-  // TODO: gain experience on kills and level up (stat bumps, new abilities)
-
   takeDamage(amount) {
-    this.game.displayText(`You take ${amount} wound!`, 'red');
-    this.wounds = this.wounds - amount;
+    super.takeDamage(amount);
     this.game.displayStats(this.stats);
-    if (this.wounds <= 0) {
-      this.game.displayText(`You are slain! Game Over :(`, 'darkred');
-      this.game.engine.lock();
-    }
   }
 
   handleEvent(e) {
@@ -69,12 +60,22 @@ class Player extends Entity {
     const newX = this._x + dir[0];
     const newY = this._y + dir[1];
     const newLocation = formatCoords(newX, newY);
+
+    // const onExit =
+    //   this.game.currentLevel.exit &&
+    //   newLocation === this.game.currentLevel.exit[0];
+
+    // Don't allow movement if the new location is outside the map
     if (!(newLocation in this.game.currentLevel.map)) return;
+
+    // if there's a mob in the new location, attack it instead of moving
     if (
       newLocation in this.game.currentLevel.entityLocals &&
       this.game.currentLevel.entityLocals[newLocation] instanceof Mob
     ) {
-      this._attack(this.game.currentLevel.entityLocals[newLocation]);
+      const mob = this.game.currentLevel.entityLocals[newLocation];
+
+      this.attack(mob);
       window.removeEventListener('keydown', this.ref);
       this.game.engine.unlock();
       return;
