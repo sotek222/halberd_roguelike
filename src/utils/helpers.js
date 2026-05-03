@@ -1,22 +1,18 @@
-function numParse(arr) {
-  return arr.map(element => parseInt(element));
-};
+export const numParse = (arr) => arr.map((element) => parseInt(element));
 
-function formatCoords(x, y) {
-  return [x, y].join();
-};
+export const formatCoords = (x, y) => [x, y].join();
 
-function getRollToHit(attackerWeaponSkill, defenderWeaponSkill) {
+export const getRollToHit = (attackerWeaponSkill, defenderWeaponSkill) => {
   if (defenderWeaponSkill > attackerWeaponSkill * 2) {
     return 5;
   } else if (defenderWeaponSkill < attackerWeaponSkill) {
     return 3;
   } else {
     return 4;
-  };
+  }
 };
 
-function getRollToWound(attackerStrength, defenderToughness) {
+export const getRollToWound = (attackerStrength, defenderToughness) => {
   if (attackerStrength + 4 <= defenderToughness) return 7;
 
   if (attackerStrength === defenderToughness) return 4;
@@ -26,44 +22,33 @@ function getRollToWound(attackerStrength, defenderToughness) {
   if (defenderToughness < attackerStrength - 1) return 2;
 };
 
-function getSavingThrow(attackerStrength, defenderArmourSave) {
+export const getSavingThrow = (attackerStrength, defenderArmourSave) => {
   switch (attackerStrength) {
     case 4:
-      defenderArmourSave + 1;
+      return defenderArmourSave + 1;
       break;
     case 5:
-      defenderArmourSave + 2;
+      return defenderArmourSave + 2;
       break;
     case 6:
-      defenderArmourSave + 3;
+      return defenderArmourSave + 3;
       break;
     case 7:
-      defenderArmourSave + 4;
+      return defenderArmourSave + 4;
       break;
     case 8:
-      defenderArmourSave + 5;
+      return defenderArmourSave + 5;
       break;
     case 9:
-      defenderArmourSave + 6;
+      return defenderArmourSave + 6;
       break;
     case 10:
-      defenderArmourSave + 7;
+      return defenderArmourSave + 7;
       break;
     default:
       return defenderArmourSave;
       break;
   }
-}
-
-function rollD6() {
-  return Math.floor(Math.random() * 6) + 1;
 };
 
-export {
-  numParse,
-  formatCoords,
-  rollD6,
-  getRollToHit,
-  getRollToWound,
-  getSavingThrow,
-};
+export const rollD6 = () => Math.floor(Math.random() * 6) + 1;

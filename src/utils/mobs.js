@@ -1,6 +1,6 @@
 // TODO: floor-based spawn tables, rare variants, and bosses on set depths
 
-import { ALIGNMENT, BEHAVIORS } from '../constants';
+import { ALIGNMENT, BEHAVIORS, Chars } from '../constants';
 
 const { wander, guard, wait } = BEHAVIORS;
 
@@ -20,7 +20,7 @@ const mobs = {
     stats: {
       name: 'rat',
       alignment: ALIGNMENT.NEUTRAL,
-      char: 'r',
+      char: Chars.rat,
       weaponSkill: 2,
       strength: 1,
       toughness: 2,
@@ -43,7 +43,7 @@ const mobs = {
     stats: {
       name: 'goblin',
       alignment: ALIGNMENT.ENEMY,
-      char: 'g',
+      char: Chars.goblin,
       weaponSkill: 2,
       strength: 2,
       toughness: 3,
@@ -66,7 +66,7 @@ const mobs = {
     stats: {
       name: 'orc',
       alignment: ALIGNMENT.ENEMY,
-      char: 'o',
+      char: Chars.orc,
       weaponSkill: 3,
       strength: 3,
       toughness: 4,
@@ -88,7 +88,7 @@ const mobs = {
     ],
     stats: {
       name: 'ogre',
-      char: 'O',
+      char: Chars.ogre,
       alignment: ALIGNMENT.ENEMY,
       weaponSkill: 3,
       strength: 4,
@@ -112,7 +112,7 @@ const mobs = {
     stats: {
       name: 'prison guard',
       alignment: ALIGNMENT.ENEMY,
-      char: 'u',
+      char: Chars.guard,
       weaponSkill: 3,
       strength: 3,
       toughness: 3,
@@ -135,7 +135,7 @@ const mobs = {
     stats: {
       name: 'human prisoner',
       alignment: ALIGNMENT.NEUTRAL,
-      char: 'p',
+      char: Chars.prisoner,
       weaponSkill: 2,
       strength: 2,
       toughness: 2,
@@ -162,7 +162,7 @@ const mobs = {
     stats: {
       name: 'guard dog',
       alignment: ALIGNMENT.ENEMY,
-      char: 'd',
+      char: Chars.guardDog,
       weaponSkill: 3,
       strength: 3,
       toughness: 3,

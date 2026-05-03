@@ -1,7 +1,26 @@
-import { ALIGNMENT, ALIGNMENT_COLOR_MAP, ENTITY_NAME } from '../constants';
+import {
+  ALIGNMENT,
+  ALIGNMENT_COLOR_MAP,
+  Chars,
+  Colors,
+  ENTITY_NAME,
+} from '../constants';
 import Player from './Player';
 
 class Entity {
+  // =====================
+  // Constructor
+  // =====================
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
   constructor(
     x,
     y,
@@ -9,7 +28,7 @@ class Entity {
     stats = {
       name: 'unknown',
       alignment: ALIGNMENT.NEUTRAL,
-      char: '⚉',
+      char: Chars.unknown,
       weaponSkill: 2,
       strength: 2,
       toughness: 2,
@@ -26,22 +45,25 @@ class Entity {
     this.color = this.getEntityColor(this);
   }
 
-  /**  =====+++++ ATTRIBUTES +++++=====
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   */
+  // =====================
+  // Instance Methods
+  // =====================
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
   get x() {
     return this._x;
   }
 
   set x(arg) {
+    this.game.devLog(`Setting x to ${arg}`);
     this._x = arg;
   }
 
@@ -50,6 +72,7 @@ class Entity {
   }
 
   set y(arg) {
+    this.game.devLog(`Setting y to ${arg}`);
     this._y = arg;
   }
 
@@ -101,20 +124,6 @@ class Entity {
     return this._stats.toughness;
   }
 
-  /** ====+++++ ACTIONS +++++=====
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   */
   draw() {
     this.game.display.draw(this.x, this.y, this.char, this.color);
   }
@@ -126,7 +135,7 @@ class Entity {
       ? `You attack the ${entity.name}!`
       : `The ${this.name} attacks you!`;
 
-    this.game.displayText(attackText, 'green');
+    this.game.displayText(attackText, Colors.green);
     this.game.currentLevel.fightRoundOfCombat(this, entity);
     this.game.displayText('+'.repeat(10));
   }
@@ -146,7 +155,10 @@ class Entity {
         ? `You are slain! Game Over :(`
         : `The ${this.name} is slain!`;
 
-      this.game.displayText(deathText, isPlayer ? 'darkred' : 'lightgreen');
+      this.game.displayText(
+        deathText,
+        isPlayer ? Colors.darkred : Colors.lightgreen,
+      );
       if (isPlayer) {
         this.game.engine.lock();
       } else {
@@ -155,17 +167,18 @@ class Entity {
     }
   }
 
-  /** ====+++++ HELPERS +++++=====
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   */
+  // =====================
+  // Helper Methods
+  // =====================
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
   getEntityColor(entity) {
     return ALIGNMENT_COLOR_MAP[entity.alignment] || '#fff';
   }

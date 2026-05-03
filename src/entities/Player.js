@@ -2,9 +2,22 @@ import { DIRS, FOV } from 'rot-js';
 import Mob from './Mob';
 import { formatCoords, numParse } from '../utils/helpers';
 import Entity from './Entity';
-import { ALIGNMENT, ENTITY_NAME } from '../constants';
+import { ALIGNMENT, Chars, Colors, ENTITY_NAME } from '../constants';
 
 class Player extends Entity {
+  // =====================
+  // Constructor
+  // =====================
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
   constructor(
     x,
     y,
@@ -12,7 +25,7 @@ class Player extends Entity {
     stats = {
       name: ENTITY_NAME.PLAYER,
       alignment: ALIGNMENT.PLAYER,
-      char: '☺︎',
+      char: Chars.player,
       wounds: 4,
       weaponSkill: 3,
       strength: 3,
@@ -36,10 +49,18 @@ class Player extends Entity {
     this._draw();
   }
 
-  _draw() {
-    this._updateVisibility();
-    super.draw();
-  }
+  // =====================
+  // Instance Methods
+  // =====================
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
 
   act() {
     this.game.engine.lock();
@@ -47,12 +68,14 @@ class Player extends Entity {
     window.addEventListener('keydown', this.ref);
   }
 
-  takeDamage(amount) {
-    super.takeDamage(amount);
-    this.game.displayStats(this.stats);
+  setNewStartingLocation(startingLocation) {
+    const [x, y] = startingLocation;
+    this.x = x;
+    this.y = y;
   }
 
   handleEvent(e) {
+    // if the key pressed isn't one of the movement keys, ignore it
     if (!(e.keyCode in this.keyMap)) return;
     e.preventDefault();
 
@@ -61,9 +84,33 @@ class Player extends Entity {
     const newY = this._y + dir[1];
     const newLocation = formatCoords(newX, newY);
 
-    // const onExit =
-    //   this.game.currentLevel.exit &&
-    //   newLocation === this.game.currentLevel.exit[0];
+    this.game.devLog(`From ${formatCoords(this.x, this.y)} to ${newLocation}`);
+
+    const onExit =
+      this.game.currentLevel.exit &&
+      newLocation === this.game.currentLevel.exit[0];
+
+    if (onExit) {
+      const lastLevel =
+        this.game.levels[this.game.levels.length - 1] ===
+        this.game.currentLevel;
+
+      if (lastLevel) {
+        this.game.displayText(
+          'You have reached the end of the demo! Thanks for playing!',
+          Colors.green,
+        );
+        this.game.ae.backgroundMusic.stop();
+        this.game.ae.soundEffects.victory.play();
+      } else {
+        this.game.displayText('You descend to the next level...', Colors.red);
+        this.game.goToNextLevel();
+      }
+
+      window.removeEventListener('keydown', this.ref);
+      this.game.engine.unlock();
+      return;
+    }
 
     // Don't allow movement if the new location is outside the map
     if (!(newLocation in this.game.currentLevel.map)) return;
@@ -92,42 +139,116 @@ class Player extends Entity {
     this.game.engine.unlock();
   }
 
+  takeDamage(amount) {
+    super.takeDamage(amount);
+    this.game.displayStats(this.stats);
+  }
+
+  // =====================
+  // Private Methods
+  // =====================
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
+  _draw() {
+    this._updateVisibility();
+    super.draw();
+  }
+
+  // _updateVisibility() {
+  //   this.game.currentLevel.redraw();
+  //   // returns true if light is able to pass through
+  //   function lightPasses(x, y) {
+  //     const key = formatCoords(x, y);
+  //     return key in this.game.currentLevel.map;
+  //   }
+
+  //   const fov = new FOV.PreciseShadowcasting(lightPasses.bind(this));
+  //   // output callback
+  //   fov.compute(
+  //     this.x,
+  //     this.y,
+  //     5,
+  //     function (x, y, r, visibility) {
+  //       const mapChar = this.game.currentLevel.map[formatCoords(x, y)];
+
+  //       let char;
+  //       if (r) {
+  //         if (mapChar) {
+  //           char = mapChar;
+  //         } else {
+  //           char = '';
+  //         }
+  //       } else {
+  //         char = this.char;
+  //       }
+
+  //       const color = mapChar ? '#660' : '';
+  //       this.game.display.draw(x, y, char, '#fff', color);
+  //     }.bind(this),
+  //   );
+  // }
+
   _updateVisibility() {
-    this.game.currentLevel.redraw();
-    // returns true if light is able to pass through
+    const visible = {};
+
     function lightPasses(x, y) {
       const key = formatCoords(x, y);
       return key in this.game.currentLevel.map;
     }
 
     const fov = new FOV.PreciseShadowcasting(lightPasses.bind(this));
-    // output callback
-    fov.compute(
-      this.x,
-      this.y,
-      5,
-      function (x, y, r, visibility) {
-        const mapChar = this.game.currentLevel.map[formatCoords(x, y)];
 
-        let char;
-        if (r) {
-          if (mapChar) {
-            char = mapChar;
-          } else {
-            char = '';
-          }
-        } else {
-          char = this.char;
-        }
+    // Compute FOV
+    fov.compute(this.x, this.y, 5, (x, y, r, visibility) => {
+      const key = formatCoords(x, y);
+      visible[key] = true;
 
-        const color = mapChar ? '#660' : '';
-        this.game.display.draw(x, y, char, '#fff', color);
-      }.bind(this),
-    );
+      // mark as explored
+      this.game.currentLevel.explored[key] = true;
+    });
+
+    // render ONLY explored + visible
+    for (const key in this.game.currentLevel.map) {
+      if (!this.game.currentLevel.explored[key]) continue;
+
+      const [x, y] = numParse(key.split(','));
+      const isVisible = visible[key];
+
+      const mapChar = this.game.currentLevel.map[key];
+
+      let fg = isVisible ? '#fff' : '#666'; // dim if not visible
+      let bg = isVisible ? '#660' : '';
+
+      this.game.display.draw(x, y, mapChar, fg, bg);
+    }
+
+    // draw player LAST so it’s always visible
+    this.game.display.draw(this.x, this.y, this.char, '#fff');
   }
 
-  static create(game, freeCells) {
-    const [x, y] = numParse(freeCells.splice(0, 1)[0].split(','));
+  // =====================
+  // Static Methods
+  // =====================
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
+  static create(game, startingLocation) {
+    const [x, y] = startingLocation;
     return new Player(x, y, game);
   }
 }

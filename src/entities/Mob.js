@@ -1,19 +1,31 @@
 import { Path, RNG, FOV } from 'rot-js';
 import { formatCoords, numParse } from '../utils/helpers';
 import Entity from './Entity';
-import { ALIGNMENT, BEHAVIORS } from '../constants';
+import { ALIGNMENT, BEHAVIORS, Chars } from '../constants';
 const { wander, wait, guard } = BEHAVIORS;
 
-// TODO: share behavior with Player via a common actor base (movement, combat hooks) instead of duplicating patterns
 class Mob extends Entity {
+  // =====================
+  // Constructor
+  // =====================
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
   constructor(
     x,
     y,
     game,
     stats = {
-      name: 'unkown',
+      name: 'unknown',
       alignment: ALIGNMENT.NEUTRAL,
-      char: '⚉',
+      char: Chars.unknown,
       weaponSkill: 2,
       strength: 2,
       toughness: 2,
@@ -25,23 +37,23 @@ class Mob extends Entity {
     super(x, y, game, stats);
 
     this.fov = null;
-
-    console.log({ stats, behaviors });
-
     this.behaviors = behaviors;
 
     this._draw();
   }
 
-  /*  ACTIONS */
-  _draw() {
-    this._updateVisibility();
-    super.draw();
-    return new Promise(
-      (result) => result,
-      (reject) => reject,
-    );
-  }
+  // =====================
+  // Instance Methods
+  // =====================
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
 
   act() {
     switch (this.alignment) {
@@ -59,6 +71,28 @@ class Mob extends Entity {
         this._wander();
         break;
     }
+  }
+
+  // =====================
+  // Private Methods
+  // =====================
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
+  _draw() {
+    this._updateVisibility();
+    super.draw();
+    return new Promise(
+      (result) => result,
+      (reject) => reject,
+    );
   }
 
   _updateVisibility() {
@@ -83,47 +117,6 @@ class Mob extends Entity {
     );
 
     this.fov = sight;
-  }
-
-  _wander() {
-    const radius = [
-      // top left corner
-      formatCoords(this.x - 1, this.y - 1),
-      // top middle
-      formatCoords(this.x, this.y - 1),
-      // top right corner
-      formatCoords(this.x + 1, this.y - 1),
-      // mid left
-      formatCoords(this.x - 1, this.y),
-      // center
-      formatCoords(this.x, this.y),
-      // mid right
-      formatCoords(this.x + 1, this.y),
-      // bottom left corner
-      formatCoords(this.x - 1, this.y + 1),
-      // bottom middle
-      formatCoords(this.x, this.y + 1),
-      // bottom right corner
-      formatCoords(this.x + 1, this.y + 1),
-    ];
-
-    const randomPos = radius[Math.floor(RNG.getUniform() * radius.length)];
-    const [newX, newY] = randomPos.split(',');
-
-    if (this._checkIfInMap(newX, newY)) {
-      this.game.display.draw(
-        this.x,
-        this.y,
-        this.game.currentLevel.map[formatCoords(this.x, this.y)],
-      );
-      delete this.game.currentLevel.entityLocals[formatCoords(this.x, this.y)];
-      this.x = parseInt(newX);
-      this.y = parseInt(newY);
-      this.game.currentLevel.entityLocals[formatCoords(this.x, this.y)] = this;
-      this._draw();
-    } else {
-      this._wander();
-    }
   }
 
   _moveTowardsPlayer() {
@@ -180,7 +173,46 @@ class Mob extends Entity {
     }
   }
 
-  /* HELPERS */
+  _wander() {
+    const radius = [
+      // top left corner
+      formatCoords(this.x - 1, this.y - 1),
+      // top middle
+      formatCoords(this.x, this.y - 1),
+      // top right corner
+      formatCoords(this.x + 1, this.y - 1),
+      // mid left
+      formatCoords(this.x - 1, this.y),
+      // center
+      formatCoords(this.x, this.y),
+      // mid right
+      formatCoords(this.x + 1, this.y),
+      // bottom left corner
+      formatCoords(this.x - 1, this.y + 1),
+      // bottom middle
+      formatCoords(this.x, this.y + 1),
+      // bottom right corner
+      formatCoords(this.x + 1, this.y + 1),
+    ];
+
+    const randomPos = radius[Math.floor(RNG.getUniform() * radius.length)];
+    const [newX, newY] = randomPos.split(',');
+
+    if (this._checkIfInMap(newX, newY)) {
+      this.game.display.draw(
+        this.x,
+        this.y,
+        this.game.currentLevel.map[formatCoords(this.x, this.y)],
+      );
+      delete this.game.currentLevel.entityLocals[formatCoords(this.x, this.y)];
+      this.x = parseInt(newX);
+      this.y = parseInt(newY);
+      this.game.currentLevel.entityLocals[formatCoords(this.x, this.y)] = this;
+      this._draw();
+    } else {
+      this._wander();
+    }
+  }
 
   _remove() {
     this.game.scheduler.remove(this);
@@ -192,6 +224,19 @@ class Mob extends Entity {
     delete this.game.currentLevel.entityLocals[formatCoords(this.x, this.y)];
     this.game.currentLevel.removeMob(this);
   }
+
+  // =====================
+  // Private Helper Methods
+  // =====================
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
 
   _playerIsInFOV() {
     return formatCoords(this.game.player.x, this.game.player.y) in this.fov;
@@ -225,7 +270,6 @@ class Mob extends Entity {
       totalWeight += b.weight;
     }
 
-    console.log({ behaviors, name: this.name });
     let r = RNG.getUniform() * totalWeight;
     let behavior = behaviors[0].name;
 
@@ -240,6 +284,20 @@ class Mob extends Entity {
 
     return behavior;
   }
+
+  // =====================
+  // Static Methods
+  // =====================
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
   static create(game, freeCells, stats, behaviors) {
     const index = Math.floor(RNG.getUniform() * freeCells.length);
     // we use splice so that the space is now considered occupied
