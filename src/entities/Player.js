@@ -164,40 +164,6 @@ class Player extends Entity {
     super.draw();
   }
 
-  // _updateVisibility() {
-  //   this.game.currentLevel.redraw();
-  //   // returns true if light is able to pass through
-  //   function lightPasses(x, y) {
-  //     const key = formatCoords(x, y);
-  //     return key in this.game.currentLevel.map;
-  //   }
-
-  //   const fov = new FOV.PreciseShadowcasting(lightPasses.bind(this));
-  //   // output callback
-  //   fov.compute(
-  //     this.x,
-  //     this.y,
-  //     5,
-  //     function (x, y, r, visibility) {
-  //       const mapChar = this.game.currentLevel.map[formatCoords(x, y)];
-
-  //       let char;
-  //       if (r) {
-  //         if (mapChar) {
-  //           char = mapChar;
-  //         } else {
-  //           char = '';
-  //         }
-  //       } else {
-  //         char = this.char;
-  //       }
-
-  //       const color = mapChar ? '#660' : '';
-  //       this.game.display.draw(x, y, char, '#fff', color);
-  //     }.bind(this),
-  //   );
-  // }
-
   _updateVisibility() {
     const visible = {};
 
