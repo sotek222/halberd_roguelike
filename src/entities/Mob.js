@@ -251,8 +251,6 @@ class Mob extends Entity {
   }
 
   _mapBehaviorToFunction(behavior) {
-    console.log(this.name, behavior.name);
-
     switch (behavior.name) {
       case wander:
         return this._wander.bind(this);
@@ -267,7 +265,6 @@ class Mob extends Entity {
 
   _getWeightedRandomBehavior() {
     const behaviors = this.behaviors;
-
     let totalWeight = 0;
 
     for (const b of behaviors) {
