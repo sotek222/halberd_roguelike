@@ -159,10 +159,12 @@ class Entity {
         deathText,
         isPlayer ? Colors.darkred : Colors.lightgreen,
       );
+
       if (isPlayer) {
         this.game.engine.lock();
       } else {
         this._remove();
+        this.game.player.gainExperienceFromKill(this);
       }
     }
   }

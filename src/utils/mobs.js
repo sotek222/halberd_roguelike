@@ -26,6 +26,7 @@ const mobs = {
       toughness: 2,
       armourSave: 7,
       wounds: 1,
+      xp: 5,
     },
   },
   goblin: {
@@ -49,6 +50,7 @@ const mobs = {
       toughness: 3,
       armourSave: 6,
       wounds: 1,
+      xp: 10,
     },
   },
   orc: {
@@ -72,6 +74,7 @@ const mobs = {
       toughness: 4,
       armourSave: 6,
       wounds: 2,
+      xp: 20,
     },
   },
   ogre: {
@@ -95,6 +98,7 @@ const mobs = {
       toughness: 5,
       armourSave: 6,
       wounds: 3,
+      xp: 40,
     },
   },
   guard: {
@@ -118,6 +122,7 @@ const mobs = {
       toughness: 3,
       armourSave: 5,
       wounds: 2,
+      xp: 15,
     },
   },
   prisoner: {
@@ -141,6 +146,7 @@ const mobs = {
       toughness: 2,
       armourSave: 7,
       wounds: 1,
+      xp: 5,
     },
   },
   guardDog: {
@@ -168,6 +174,7 @@ const mobs = {
       toughness: 3,
       armourSave: 7,
       wounds: 1,
+      xp: 10,
     },
   },
 };

@@ -31,6 +31,7 @@ class Player extends Entity {
       strength: 3,
       toughness: 3,
       armourSave: 5,
+      xp: 0,
     },
   ) {
     super(x, y, game, stats);
@@ -118,10 +119,11 @@ class Player extends Entity {
     if (!(newLocation in this.game.currentLevel.map)) return;
 
     // if there's a mob in the new location, attack it instead of moving
-    if (
-      newLocation in this.game.currentLevel.entityLocals &&
-      this.game.currentLevel.entityLocals[newLocation] instanceof Mob
-    ) {
+    const movingIntoEntity = newLocation in this.game.currentLevel.entityLocals;
+    const entityIsMob =
+      this.game.currentLevel.entityLocals[newLocation] instanceof Mob;
+
+    if (movingIntoEntity && entityIsMob) {
       const mob = this.game.currentLevel.entityLocals[newLocation];
 
       this.attack(mob);
@@ -130,7 +132,6 @@ class Player extends Entity {
       return;
     }
 
-    // this.game.display.draw(this.x, this.y, this.game.currentLevel.map[formatCoords(this.x, this.y)]);
     delete this.game.currentLevel.entityLocals[formatCoords(this.x, this.y)];
     this.x = newX;
     this.y = newY;
@@ -144,6 +145,16 @@ class Player extends Entity {
   takeDamage(amount) {
     super.takeDamage(amount);
     this.game.displayStats(this.stats);
+  }
+
+  gainExperienceFromKill(entity) {
+    const xpGained = entity.stats.xp || 0;
+    this.stats.xp += xpGained;
+
+    if (xpGained > 0) {
+      this.game.displayText(`You gain ${xpGained} XP!`, Colors.lightgreen);
+      this.game.displayStats(this.stats);
+    }
   }
 
   // =====================

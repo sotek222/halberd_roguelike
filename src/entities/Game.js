@@ -65,7 +65,7 @@ class Game {
   //
 
   init() {
-    this.ae.backgroundMusic.play();
+    // this.ae.backgroundMusic.play();
 
     // const initialLevel = new Level(this);
     const initialLevel = this.levels[0];

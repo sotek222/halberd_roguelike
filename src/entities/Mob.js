@@ -1,7 +1,13 @@
 import { Path, RNG, FOV } from 'rot-js';
 import { formatCoords, numParse } from '../utils/helpers';
 import Entity from './Entity';
-import { ALIGNMENT, BEHAVIORS, Chars } from '../constants';
+import {
+  ALIGNMENT,
+  ALIGNMENT_COLOR_MAP,
+  BEHAVIORS,
+  Chars,
+  Colors,
+} from '../constants';
 const { wander, wait, guard } = BEHAVIORS;
 
 class Mob extends Entity {
@@ -38,6 +44,7 @@ class Mob extends Entity {
 
     this.fov = null;
     this.behaviors = behaviors;
+    this.hasBeenSeen = false;
 
     this._draw();
   }
@@ -91,7 +98,17 @@ class Mob extends Entity {
 
     const playerFov = this.game.player.visible;
 
-    if (formatCoords(this.x, this.y) in playerFov) super.draw();
+    if (formatCoords(this.x, this.y) in playerFov) {
+      if (!this.hasBeenSeen) {
+        this.hasBeenSeen = true;
+        this.game.displayText(
+          `You see a${/^[aeiou]/i.test(this.name) ? 'n' : ''} ${this.name}.`,
+          ALIGNMENT_COLOR_MAP[this.alignment],
+        );
+      }
+
+      super.draw();
+    }
 
     return new Promise(
       (result) => result,
