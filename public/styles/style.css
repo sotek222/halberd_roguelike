@@ -27,13 +27,14 @@ body {
 
 .info-screen {
   display: flex;
+  height: 400px;
 }
 
 .text-container,
 .stats-container {
   background-color: black;
   width: 600px;
-  height: 200px;
+  height: 100%
   border: 1px solid gray;
   overflow: scroll;
 }
@@ -50,16 +51,30 @@ body {
   display: flex;
   flex-flow: column;
   justify-content: space-between;
+  height: 100%;
 }
 
-.stats-container > :first-child {
-  margin-top: 5px;
-}
-
-.stats-container> :last-child {
+.stats-container > :last-child {
   margin-bottom: 5px;
 }
 
 .stat {
   color: white;
+}
+
+.stats-wrapper {
+  font-family: 'Fira Mono', 'Consolas', 'Courier New', monospace;
+  color: #33ff33;
+  padding: 0.5em;
+}
+
+.stats-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: inherit;
+}
+
+.stats-table-cell {
+  border: 1px dashed #33ff33;
+  padding: 0.25em;
 }
