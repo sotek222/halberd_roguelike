@@ -34,22 +34,22 @@ class Game {
     // the Display class comes from rot.js
     // it creates a canvas element
     this.display = new Display({
-      width: 200,
-      layout: 'tile',
-      tileWidth: 64,
-      tileHeight: 64,
-      tileSet: tileSet,
-      tileMap: {
-        [Chars.player]: [0, 0],
-        [Chars.goblin]: [64, 0],
-        [Chars.orc]: [128, 0],
-        [Chars.guard]: [256, 0],
-        [Chars.guardDog]: [320, 0],
-        [Chars.prisoner]: [384, 0],
-        [Chars.rat]: [448, 0],
-        [Tiles.floor]: [511, 0],
-        [Tiles.exit]: [576, 0],
-      },
+      width: 133,
+      // layout: 'tile',
+      // tileWidth: 124,
+      // tileHeight: 64,
+      // tileSet: tileSet,
+      // tileMap: {
+      //   [Chars.player]: [0, 0],
+      //   [Chars.goblin]: [64, 0],
+      //   [Chars.orc]: [128, 0],
+      //   [Chars.guard]: [256, 0],
+      //   [Chars.guardDog]: [320, 0],
+      //   [Chars.prisoner]: [384, 0],
+      //   [Chars.rat]: [448, 0],
+      //   [Tiles.floor]: [511, 0],
+      //   [Tiles.exit]: [576, 0],
+      // },
     });
 
     // this will hold all the levels of the game.
