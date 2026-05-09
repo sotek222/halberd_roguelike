@@ -4,6 +4,7 @@ import {
   Chars,
   Colors,
   ENTITY_NAME,
+  Tiles,
 } from '../constants';
 import Player from './Player';
 
@@ -125,7 +126,12 @@ class Entity {
   }
 
   draw() {
-    this.game.display.draw(this.x, this.y, this.char, this.color);
+    this.game.display.draw(
+      this.x,
+      this.y,
+      [Tiles.floor, this.char],
+      this.color,
+    );
   }
 
   attack(entity) {
